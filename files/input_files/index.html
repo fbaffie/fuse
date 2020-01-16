@@ -63,7 +63,11 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../../install/test_cases/">Test cases</a>
+    <a class="" href="../../install/test_data/">Test data</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../install/test_runs/">Test runs</a>
                 </li>
     </ul>
 	    </li>
@@ -87,9 +91,6 @@
     <ul class="subnav">
             
     <li class="toctree-l3"><a href="#forcing-time-series">Forcing time series</a></li>
-    
-
-    <li class="toctree-l3"><a href="#input-info">Input info</a></li>
     
 
     <li class="toctree-l3"><a href="#elevation-bands">Elevation bands</a></li>
@@ -165,15 +166,14 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="forcing-time-series">Forcing time series</h2>
-<p><strong>Purpose:</strong> This file...</p>
-<p><strong>Structure:</strong></p>
-<h2 id="input-info">Input info</h2>
-<p><strong>Purpose:</strong> This file...</p>
-<p><strong>Structure:</strong></p>
+                <p>The <code>input</code> directory must contain the following files (provided for the catchment case study):</p>
+<h2 id="forcing-time-series">Forcing time series</h2>
+<p><strong>Purpose:</strong>  The file <code>forcefile</code> (called <code>us_09066300_input.nc</code> in the catchment case study) contains the input data in a 2D (resp. 3D) arrays for modeling at the catchment (resp. grid) scale. The name of this file is made by appending the <code>suffix_forcing</code> defined in the <code>FILEMANAGER</code> (see B) to the basin ID (see E <code>$2</code>).</p>
+<p><strong>Requirements:</strong> The dimension of the NetCDF files will determine if FUSE is run at the catchment or grid-scale. FUSE will look for the variables <code>lat</code> and <code>lon</code> and if they are arrays, it will run on the grid they define. This means that NetCDF input files for a single catchment must also include the variables <code>lat</code> and <code>lon</code>.</p>
+<p><strong>Format:</strong> NetCDF</p>
 <h2 id="elevation-bands">Elevation bands</h2>
-<p><strong>Purpose:</strong> This file...</p>
-<p><strong>Structure:</strong></p>
+<p><strong>Purpose:</strong> The file <code>BFILE</code> (called <code>us_09066300_elev_bands.nc</code> in the catchment case study) describe the elevation bands required when the snow module is on. The dimensions of this file must match that of <code>forcefile</code>. The name of this file is made by appending the <code>suffix_elev_bands</code> defined in the <code>FILEMANAGER</code> (see B) to the basin ID (see E <code>$2</code>).</p>
+<p><strong>Requirements:</strong></p>
               
             </div>
           </div>

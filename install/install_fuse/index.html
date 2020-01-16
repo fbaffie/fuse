@@ -65,35 +65,24 @@
     <li class="toctree-l3"><a href="#notes-on-the-computing-environment">Notes on the computing environment</a></li>
     
 
-    <li class="toctree-l3"><a href="#a-fork-the-fuse-repository-and-compile-fuse">A. Fork the FUSE repository and compile FUSE</a></li>
+    <li class="toctree-l3"><a href="#1-fork-the-fuse-repository">1. Fork the FUSE repository</a></li>
     
 
-    <li class="toctree-l3"><a href="#b-populate-the-bin-directory">B. Populate the bin directory</a></li>
+    <li class="toctree-l3"><a href="#2-compile-sce">2. Compile SCE</a></li>
     
 
-    <li class="toctree-l3"><a href="#c-populate-the-settings-directory">C. Populate the settings directory</a></li>
-    
-
-    <li class="toctree-l3"><a href="#d-populate-the-input-directory">D. Populate the input directory</a></li>
-    
-
-    <li class="toctree-l3"><a href="#e-execute-fuse">E. Execute FUSE</a></li>
-    
-
-    <li class="toctree-l3"><a href="#f-content-of-the-output-directory">F. Content of the output directory</a></li>
-    
-
-    <li class="toctree-l3"><a href="#g-run-fuse-for-the-grid-case-study">G. Run FUSE for the grid case study</a></li>
-    
-
-    <li class="toctree-l3"><a href="#h-compile-sce">H. Compile SCE</a></li>
+    <li class="toctree-l3"><a href="#3-compile-fuse">3. Compile FUSE</a></li>
     
 
     </ul>
                 </li>
                 <li class="">
                     
-    <a class="" href="../test_cases/">Test cases</a>
+    <a class="" href="../test_data/">Test data</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../test_runs/">Test runs</a>
                 </li>
     </ul>
 	    </li>
@@ -189,9 +178,8 @@
 <li>below we assume that you will be compiling and running FUSE in a Linux/UNIX environment - for OS X/macOS, have a look at this <a href="https://summa.readthedocs.io/en/latest/installation/SUMMA_on_OS_X/">page</a> of the SUMMA manual,</li>
 <li>you will need a Fortran compiler - FUSE was developed and tested using <code>ifort</code>, which we recommend if you have no previous experience with Fortran compilers, note that to use <code>ifort</code> you might have to load the associated module (try <code>module avail</code> and then <code>module add</code>),</li>
 <li>you will need access to the NetCDF and HDF libraries - use the libraries compiled with the compiler you selected above, you might have to load them (again, try <code>module avail</code> and <code>module add</code>), then try <code>which ncdump</code>, as this should give you an idea of the path to the NetCDF libraries, the path to the HDF libraries should be similar. Note that these paths are machine-dependent.</li>
-<li>you will need data to test FUSE, we provide data for two test cases, start by downloading the data for the <a href="../test_cases/">catchment test case</a>.</li>
 </ol>
-<h2 id="a-fork-the-fuse-repository-and-compile-fuse">A. Fork the FUSE repository and compile FUSE</h2>
+<h2 id="1-fork-the-fuse-repository">1. Fork the FUSE repository</h2>
 <ol>
 <li>Fork the <a href="https://github.com/naddor/fuse">FUSE repository</a> to a directory <code>$(MASTER)</code> on your machine (see the <a href="http://summa.readthedocs.io/en/latest/development/SUMMA_and_git/">SUMMA manual</a> for a step-by-step procedure)</li>
 <li>Change directory to <code>$(MASTER)/build/</code> and edit the <code>Makefile</code> by:<ul>
@@ -200,64 +188,21 @@
 <li>defining the path to the NetCDF and HDF libraries (lines 34-35).</li>
 </ul>
 </li>
-<li>Compile the SCE code (see Section H below).</li>
-<li>Compile the FUSE code (type <code>make</code>).</li>
-<li>Change to <code>$(MASTER)/bin/</code> and try running FUSE by typing <code>./fuse.exe</code>. If the output is <code>1st command-line argument is missing (fileManager)</code>, you have probably compiled FUSE correctly. </li>
 </ol>
-<h2 id="b-populate-the-bin-directory">B. Populate the bin directory</h2>
-<p>To run FUSE, you must use a <code>FILEMANAGER</code>, which defines the paths to the FUSE <code>settings</code>, <code>input</code>, <code>output</code> directories, as well as other settings essential to run FUSE (described in Sections C and D).
-1. Move the file <code>fm_catch.txt</code> provided for the catchment case study to <code>$(MASTER)/bin/</code>. This is the <code>FILEMANAGER</code> for the catchment case study.
-1. Update the lines 3 to 5 of <code>fm_catch.txt</code> using the path of the <code>fuse_catch</code> directory on your machine.</p>
-<h2 id="c-populate-the-settings-directory">C. Populate the settings directory</h2>
-<p>The <code>settings</code> directory must contain the following files (provided for the catchment case study):</p>
+<h2 id="2-compile-sce">2. Compile SCE</h2>
 <ol>
-<li>The file <code>M_DECISIONS</code> (called <code>fuse_zDecisions_902.txt</code> in the case studies) describes the different options available in the FUSE modeling framework. These modeling decisions are described in detail by <a href="http://dx.doi.org/10.1029/2007WR006735">Clark et al. (WRR, 2008)</a>, except decision 9 described in <a href="http://dx.doi.org/10.1002/2014WR016736">Henn et al. (WRR, 2015)</a>.</li>
-<li>The file <code>CONSTRAINTS</code> (called <code>fuse_zConstraints_snow.txt</code> in the case studies) defines in particular the default parameter values and lower and upper parameter bounds. The list of parameters corresponds to those described in <a href="http://dx.doi.org/10.1029/2007WR006735">Clark et al. (WRR, 2008)</a> and <a href="http://dx.doi.org/10.1002/2014WR016736">Henn et al. (WRR, 2015)</a>.</li>
-<li>The file <code>MOD_NUMERIX</code> (called <code>fuse_zNumerix.txt</code> in the case studies) defines decisions regarding the numerical solution technique. Examples of the impact of these decisions are described by <a href="http://dx.doi.org/10.1029/2009WR008894">Clark and Kavetski (WRR 2010)</a> and <a href="http://dx.doi.org/10.1029/2009WR008896">Kavetski and Clark (WRR 2010)</a>.</li>
-<li>The file <code>FORCINGINFO</code> (called <code>input_info.txt</code> in the case studies) provides metadata for the NetCDF input file. It defines the name and units of the variables in the input file.</li>
+<li>FUSE relies on an algorithm called <em>shuffled complex evolution</em> (SCE) for automated parameter estimation. SCE code (<code>$(MASTER)/build/FUSE_SRC/FUSE_SCE/sce.f</code>) was written in Fortran 77, so it must be compiled separately, before FUSE is compiled. If you use <code>ifort</code>, try the following flags:</li>
 </ol>
-<h2 id="d-populate-the-input-directory">D. Populate the input directory</h2>
-<p>The <code>input</code> directory must contain the following files (provided for the catchment case study):</p>
-<ol>
-<li>The file <code>forcefile</code> (called <code>us_09066300_input.nc</code> in the catchment case study) contains the input data in a 2D (resp. 3D) arrays for modeling at the catchment (resp. grid) scale. The name of this file is made by appending the <code>suffix_forcing</code> defined in the <code>FILEMANAGER</code> (see B) to the basin ID (see E <code>$2</code>).</li>
-<li>The file <code>BFILE</code> (called <code>us_09066300_elev_bands.nc</code> in the catchment case study) describe the elevation bands required when the snow module is on. The dimensions of this file must match that of <code>forcefile</code>. The name of this file is made by appending the <code>suffix_elev_bands</code> defined in the <code>FILEMANAGER</code> (see B) to the basin ID (see E <code>$2</code>).</li>
-</ol>
-<p>Note that the dimension of the NetCDF files will determine if FUSE is run at the catchment or grid-scale. FUSE will look for the variables <code>lat</code> and <code>lon</code> and if they are arrays, it will run on the grid they define. This means that NetCDF input files for a single catchment must also include the variables <code>lat</code> and <code>lon</code>.</p>
-<h2 id="e-execute-fuse">E. Execute FUSE</h2>
-<p>Run FUSE using default parameter values at the catchment scale:</p>
-<pre><code>./fuse.exe fm_catch.txt us_09066300 run_def
-</code></pre>
-
-<p>then calibrate it:</p>
-<pre><code>./fuse.exe fm_catch.txt us_09066300 calib_sce
-</code></pre>
-
-<p>then run it with the best SCE parameter set:</p>
-<pre><code>./fuse.exe fm_catch.txt us_09066300 run_best
-</code></pre>
-
-<p>where
-<code>$1</code> is the file manager,
-<code>$2</code> is the basin ID,
-<code>$3</code> is the FUSE mode.</p>
-<h2 id="f-content-of-the-output-directory">F. Content of the output directory</h2>
-<p>Running FUSE in its different modes will create the following files in the <code>output</code> directory (provided for the catchment case study for comparison purposes):
-* the files whose name contains <code>runs</code> contain the simulations,
-* the files whose name contains <code>para</code> contain the parameter values,
-* the last element of the file name indicates which FUSE mode was used.</p>
-<h2 id="g-run-fuse-for-the-grid-case-study">G. Run FUSE for the grid case study</h2>
-<p>Download the data for the grid scale case study (see <code>FUSE modes and case studies</code> section) and follow the same steps as for the catchment scale case study.</p>
-<p>Run FUSE unsing default parameter values over the grid:</p>
-<pre><code>./fuse.exe fm_grid.txt cesm1-cam5 run_def
-</code></pre>
-
-<p>Note that because the gridded data does not contain streamflow, FUSE cannot be calibrated using SCE. Instead, FUSE can be run using pre-defined parameter sets using the <code>run_pre</code> mode (description to be added).   </p>
-<h2 id="h-compile-sce">H. Compile SCE</h2>
-<p>The code of the shuffled complex evolution method (<code>$(MASTER)/build/FUSE_SRC/FUSE_SCE/sce.f</code>) was written in F77, so it must be compiled separately. If you use <code>ifort</code>, try the following flags:</p>
 <pre><code>ifort -O2 -c -fixed sce_16plus.f
 </code></pre>
 
 <p>If necessary, rename the compiled file, so that it can be found by the <code>Makefile</code>, which by default will be looking for a file named <code>sce_16plus.o</code>.</p>
+<h2 id="3-compile-fuse">3. Compile FUSE</h2>
+<ol>
+<li>Compile the FUSE code (type <code>make</code>).</li>
+<li>Change to <code>$(MASTER)/bin/</code> and try running FUSE by typing <code>./fuse.exe</code>.</li>
+</ol>
+<p>If the output is <code>1st command-line argument is missing (fileManager)</code>, you have probably compiled FUSE correctly. </p>
 <p><a id="infile_file_formats"></a></p>
               
             </div>
@@ -266,7 +211,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../test_cases/" class="btn btn-neutral float-right" title="Test cases">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../test_data/" class="btn btn-neutral float-right" title="Test data">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../.." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -298,7 +243,7 @@
         <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../test_cases/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../test_data/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

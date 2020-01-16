@@ -63,7 +63,11 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../../install/test_cases/">Test cases</a>
+    <a class="" href="../../install/test_data/">Test data</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../install/test_runs/">Test runs</a>
                 </li>
     </ul>
 	    </li>
@@ -90,9 +94,6 @@
     <a class="current" href="./">Settings files</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#file-1">File 1</a></li>
-    
-
     </ul>
                 </li>
                 <li class="">
@@ -159,10 +160,21 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="file-1">File 1</h2>
-<p><strong>Purpose:</strong> This file...</p>
-<p><strong>Structure:</strong></p>
-<p><strong>Example:</strong></p>
+                <p>The <code>settings</code> directory must contain the following files (provided for the catchment case study):</p>
+<ol>
+<li>
+<p>The file <code>M_DECISIONS</code> (called <code>fuse_zDecisions_902.txt</code> in the case studies) describes the different options available in the FUSE modeling framework. These modeling decisions are described in detail by <a href="http://dx.doi.org/10.1029/2007WR006735">Clark et al. (WRR, 2008)</a>, except decision 9 described in <a href="http://dx.doi.org/10.1002/2014WR016736">Henn et al. (WRR, 2015)</a>.</p>
+</li>
+<li>
+<p>The file <code>CONSTRAINTS</code> (called <code>fuse_zConstraints_snow.txt</code> in the case studies) defines in particular the default parameter values and lower and upper parameter bounds. The list of parameters corresponds to those described in <a href="http://dx.doi.org/10.1029/2007WR006735">Clark et al. (WRR, 2008)</a> and <a href="http://dx.doi.org/10.1002/2014WR016736">Henn et al. (WRR, 2015)</a>.</p>
+</li>
+<li>
+<p>The file <code>MOD_NUMERIX</code> (called <code>fuse_zNumerix.txt</code> in the case studies) defines decisions regarding the numerical solution technique. Examples of the impact of these decisions are described by <a href="http://dx.doi.org/10.1029/2009WR008894">Clark and Kavetski (WRR 2010)</a> and <a href="http://dx.doi.org/10.1029/2009WR008896">Kavetski and Clark (WRR 2010)</a>.</p>
+</li>
+<li>
+<p>The file <code>FORCINGINFO</code> (called <code>input_info.txt</code> in the case studies) provides metadata for the NetCDF input file. It defines the name and units of the variables in the input file.</p>
+</li>
+</ol>
               
             </div>
           </div>

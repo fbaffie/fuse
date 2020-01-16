@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>Test cases - FUSE manual</title>
+  <title>Test runs - FUSE manual</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Test cases";
-    var mkdocs_page_input_path = "install/test_cases.md";
+    var mkdocs_page_name = "Test runs";
+    var mkdocs_page_input_path = "install/test_runs.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -61,11 +61,21 @@
                     
     <a class="" href="../install_fuse/">Installation</a>
                 </li>
+                <li class="">
+                    
+    <a class="" href="../test_data/">Test data</a>
+                </li>
                 <li class=" current">
                     
-    <a class="current" href="./">Test cases</a>
+    <a class="current" href="./">Test runs</a>
     <ul class="subnav">
             
+    <li class="toctree-l3"><a href="#run-fuse-for-the-catchment-test-case">Run FUSE for the catchment test case</a></li>
+    
+
+    <li class="toctree-l3"><a href="#run-fuse-for-the-grid-case-study">Run FUSE for the grid case study</a></li>
+    
+
     </ul>
                 </li>
     </ul>
@@ -146,7 +156,7 @@
         
       
     
-    <li>Test cases</li>
+    <li>Test runs</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -156,11 +166,27 @@
           <div role="main">
             <div class="section">
               
-                <p>To get you started with FUSE, we provide files for two test cases involving modeling at different spatial scales:</p>
-<ul>
-<li>catchment scale: forcing and streamflow data for the <a href="https://waterdata.usgs.gov/nwis/inventory/?site_no=09066300&amp;agency_cd=USGS&amp;">USGS 09066300 MIDDLE CREEK NEAR MINTURN, CO.</a> catchment - available <a href="https://dl.dropboxusercontent.com/s/f6omcgz8hsirlr0/fuse_catch.zip?dl=0">here [0.5MB]</a> for download,  </li>
-<li>grid scale: forcing from a climate model on a 1/8th degree grid for a 58 x 28 grid cells domain - available <a href="https://dl.dropboxusercontent.com/s/g5193e0n01ao33d/fuse_grid.zip?dl=0">here [42MB]</a> for download.</li>
-</ul>
+                <h2 id="run-fuse-for-the-catchment-test-case">Run FUSE for the catchment test case</h2>
+<p>The three next steps will enable you to quickly test if FUSE is running as expected. The instruction were purposefully kept short, but each element is described in detail in the rest of the documentation.</p>
+<ol>
+<li>If you haven't yet, download the data for the <a href="https://dl.dropboxusercontent.com/s/f6omcgz8hsirlr0/fuse_catch.zip?dl=0">catchment test case</a> to a directory <code>$(data_catch)</code>.</li>
+<li>Update the lines 3 to 5 of <code>fm_catch.txt</code> (this is the file manager) using the path of the <code>$(data_catch)</code>.</li>
+<li>Run FUSE using default parameter values (note <code>run_def</code> below):</li>
+</ol>
+<pre><code>./fuse.exe path_to_data_catch/fm_catch.txt us_09066300 run_def
+</code></pre>
+
+<p>If FUSE runs and terminates with <code>Done</code>, you have setup FUSE correctly.</p>
+<h2 id="run-fuse-for-the-grid-case-study">Run FUSE for the grid case study</h2>
+<ol>
+<li>If you haven't yet, download the data for the <a href="https://dl.dropboxusercontent.com/s/f6omcgz8hsirlr0/fuse_catch.zip?dl=0">grid test case</a> to a directory <code>$(data_grid)</code>.</li>
+<li>Update the lines 3 to 5 of <code>fm_grid.txt</code> (this is the file manager) using the path of the <code>$(data_grid)</code>.</li>
+<li>Run FUSE using default parameter values (note <code>run_def</code> below):</li>
+</ol>
+<pre><code>./fuse.exe path_to_data_grid/fm_grid.txt cesm1-cam5 run_def
+</code></pre>
+
+<p>If FUSE runs and terminates with <code>Done</code>, you have setup FUSE correctly.</p>
               
             </div>
           </div>
@@ -171,7 +197,7 @@
         <a href="../../execution_modes/" class="btn btn-neutral float-right" title="Execution modes">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../install_fuse/" class="btn btn-neutral" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../test_data/" class="btn btn-neutral" title="Test data"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -197,7 +223,7 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../install_fuse/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../test_data/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../../execution_modes/" style="color: #fcfcfc">Next &raquo;</a></span>

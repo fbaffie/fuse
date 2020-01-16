@@ -63,7 +63,11 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../install/test_cases/">Test cases</a>
+    <a class="" href="../install/test_data/">Test data</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../install/test_runs/">Test runs</a>
                 </li>
     </ul>
 	    </li>
@@ -73,6 +77,12 @@
     <a class="current" href="./">Execution modes</a>
     <ul class="subnav">
             
+    <li class="toctree-l2"><a href="#spatial-configurations">Spatial configurations</a></li>
+    
+
+    <li class="toctree-l2"><a href="#parameter-estimation-modes">Parameter estimation modes</a></li>
+    
+
     </ul>
 	    </li>
           
@@ -152,7 +162,15 @@
           <div role="main">
             <div class="section">
               
-                <p>Run FUSE using default parameter values at the catchment scale:</p>
+                <h2 id="spatial-configurations">Spatial configurations</h2>
+<p>FUSE can be run for an individual catchment or on grid. The latter mode is designed to run FUSE over large domains and to conduct impact assessments using gridded simulations from climate models.</p>
+<p>FUSE will automatically adapt to the spatial configuration of the input files: the dimension of the NetCDF files will determine if FUSE is run at the catchment or grid-scale. FUSE will look for the variables <code>lat</code> and <code>lon</code> and if they are arrays, it will run on the grid they define.</p>
+<h2 id="parameter-estimation-modes">Parameter estimation modes</h2>
+<p>Run can use three modes, all rely on the same syntax and the same three arguments:</p>
+<p><code>$1</code> is the file manager,
+<code>$2</code> is the basin ID,
+<code>$3</code> is the FUSE mode.</p>
+<p>Run FUSE using default parameter values:</p>
 <pre><code>./fuse.exe fm_catch.txt us_09066300 run_def
 </code></pre>
 
@@ -164,10 +182,7 @@
 <pre><code>./fuse.exe fm_catch.txt us_09066300 run_best
 </code></pre>
 
-<p>where
-<code>$1</code> is the file manager,
-<code>$2</code> is the basin ID,
-<code>$3</code> is the FUSE mode.</p>
+<p>Note that because the gridded data does not contain streamflow, FUSE cannot be calibrated using SCE. Instead, FUSE can be run using pre-defined parameter sets using the <code>run_pre</code> mode (description to be added).   </p>
               
             </div>
           </div>
@@ -178,7 +193,7 @@
         <a href="../files/file_manager/" class="btn btn-neutral float-right" title="File manager">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../install/test_cases/" class="btn btn-neutral" title="Test cases"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../install/test_runs/" class="btn btn-neutral" title="Test runs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -204,7 +219,7 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../install/test_cases/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../install/test_runs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../files/file_manager/" style="color: #fcfcfc">Next &raquo;</a></span>

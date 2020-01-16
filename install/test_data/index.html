@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>Precipitation - FUSE manual</title>
+  <title>Test data - FUSE manual</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Precipitation";
-    var mkdocs_page_input_path = "modules/1_precip.md";
+    var mkdocs_page_name = "Test data";
+    var mkdocs_page_input_path = "install/test_data.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -59,15 +59,27 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../install/install_fuse/">Installation</a>
+    <a class="" href="../install_fuse/">Installation</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Test data</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#data-for-two-spatial-configurations">Data for two spatial configurations</a></li>
+    
+
+    <li class="toctree-l3"><a href="#catchment-test-case">Catchment test case</a></li>
+    
+
+    <li class="toctree-l3"><a href="#grid-test-case">Grid test case</a></li>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../install/test_data/">Test data</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../install/test_runs/">Test runs</a>
+    <a class="" href="../test_runs/">Test runs</a>
                 </li>
     </ul>
 	    </li>
@@ -104,18 +116,9 @@
 		
     <span class="caption-text">FUSE modules</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">Precipitation</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#option-1-additive-correction-factor">Option 1: Additive correction factor</a></li>
-    
-
-    <li class="toctree-l3"><a href="#option-2-multiplicative-correction-factor">Option 2: Multiplicative correction factor</a></li>
-    
-
-    </ul>
+    <a class="" href="../../modules/1_precip/">Precipitation</a>
                 </li>
     </ul>
 	    </li>
@@ -152,11 +155,11 @@
     
       
         
-          <li>FUSE modules &raquo;</li>
+          <li>Installation and test cases &raquo;</li>
         
       
     
-    <li>Precipitation</li>
+    <li>Test data</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -166,8 +169,13 @@
           <div role="main">
             <div class="section">
               
-                <h3 id="option-1-additive-correction-factor">Option 1: Additive correction factor</h3>
-<h3 id="option-2-multiplicative-correction-factor">Option 2: Multiplicative correction factor</h3>
+                <h2 id="data-for-two-spatial-configurations">Data for two spatial configurations</h2>
+<p>To get you started with FUSE, we provide data for two test cases. They will enable you to test FUSE in its two spatial configurations: FUSE can be run for an individual catchment or on grid (see <a href="../../../execution_modes/">Execution modes</a>).</p>
+<p>The dimension of the NetCDF files will determine if FUSE is run at the catchment or grid-scale. FUSE will look for the variables <code>lat</code> and <code>lon</code> and if they are arrays, it will run on the grid they define.</p>
+<h2 id="catchment-test-case">Catchment test case</h2>
+<p>Observed atmospheric forcing and streamflow estimates for the catchment <a href="https://waterdata.usgs.gov/nwis/inventory/?site_no=09066300&amp;agency_cd=USGS&amp;">Middle Creek near Minturn</a> in Colorado, USA  - data available <a href="https://dl.dropboxusercontent.com/s/f6omcgz8hsirlr0/fuse_catch.zip?dl=0">here [0.5MB]</a> for download. This catchment is part of the CAMELS data set.  </p>
+<h2 id="grid-test-case">Grid test case</h2>
+<p>Atmospheric forcing simulated by a climate model on a 1/8th degree grid for a 58 x 28 grid cells domain - data available <a href="https://dl.dropboxusercontent.com/s/g5193e0n01ao33d/fuse_grid.zip?dl=0">here [42MB]</a> for download.</p>
               
             </div>
           </div>
@@ -175,10 +183,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../tofu/" class="btn btn-neutral float-right" title="Tools for FUSE">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../test_runs/" class="btn btn-neutral float-right" title="Test runs">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../files/output_files/" class="btn btn-neutral" title="Output files"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../install_fuse/" class="btn btn-neutral" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -204,10 +212,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../files/output_files/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../install_fuse/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../../tofu/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../test_runs/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
