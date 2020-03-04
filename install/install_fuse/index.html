@@ -62,11 +62,14 @@
                     <li class="toctree-l1"><a class="reference internal" href="../test_runs/">Test runs</a>
                     </li>
                 </ul>
+                <p class="caption"><span class="caption-text">Modes</span></p>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../execution_modes/">Execution modes</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../modes/execution_modes/">Parameter estimation modes</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../modes/spatial_modes/">Spatial modes</a>
                     </li>
                 </ul>
-                <p class="caption"><span class="caption-text">FUSE files</span></p>
+                <p class="caption"><span class="caption-text">Files</span></p>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../../files/file_manager/">File manager</a>
                     </li>
@@ -77,7 +80,7 @@
                     <li class="toctree-l1"><a class="reference internal" href="../../files/output_files/">Output files</a>
                     </li>
                 </ul>
-                <p class="caption"><span class="caption-text">FUSE modules</span></p>
+                <p class="caption"><span class="caption-text">Modules</span></p>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../../modules/1_precip/">Precipitation</a>
                     </li>
@@ -130,8 +133,8 @@
 <p>This page will guide you through the installation of FUSE. Before you get started, please note that:</p>
 <ol>
 <li>below we assume that you will be compiling and running FUSE in a Linux/UNIX environment - for OS X/macOS, have a look at this <a href="https://summa.readthedocs.io/en/latest/installation/SUMMA_on_OS_X/">page</a> of the SUMMA manual,</li>
-<li>you will need a Fortran compiler - FUSE was developed and tested using <code>ifort</code>, which we recommend if you have no previous experience with Fortran compilers, note that to use <code>ifort</code> you might have to load the associated module (try <code>module avail</code> and then <code>module add [your/module/version/compiler]</code>),</li>
-<li>you will need access to the NetCDF and HDF libraries - use the libraries compiled with the compiler you selected above, you might have to load them (again, try <code>module avail</code> and <code>module add</code>), then try <code>module show [your/module/version/compiler]</code> as this should provide the path of the libraries. Note that these paths are machine-dependent, so paths for another machine probably will not work on your machine.</li>
+<li>you will need a Fortran compiler:  FUSE was developed and tested using <code>ifort</code>, which we recommend if you have no previous experience with Fortran compilers - note that to use <code>ifort</code> you might have to load the associated module (try <code>module avail</code> and then <code>module add [your/module/version/compiler]</code>),</li>
+<li>you will need access to the NetCDF and HDF libraries: use the libraries compiled with the compiler you selected above, you might have to load them - once loaded, try <code>module show [your/module/version/compiler]</code> this should provide the path to the libraries. Note that these paths are machine-dependent, so paths for another machine probably will not work on your machine.</li>
 </ol>
 <h2 id="1-fork-the-fuse-repository">1. Fork the FUSE repository</h2>
 <ol>

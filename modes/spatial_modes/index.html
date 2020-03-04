@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>Test data - FUSE manual</title>
+  <title>Spatial modes - FUSE manual</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../../css/theme.css" />
@@ -18,8 +18,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Test data";
-    var mkdocs_page_input_path = "install/test_data.md";
+    var mkdocs_page_name = "Spatial modes";
+    var mkdocs_page_input_path = "modes/spatial_modes.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -52,21 +52,21 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Installation and test cases</span></p>
-                <ul class="current">
-                    <li class="toctree-l1"><a class="reference internal" href="../install_fuse/">Installation</a>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../install/install_fuse/">Installation</a>
                     </li>
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Test data</a>
-    <ul class="current">
-    </ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../install/test_data/">Test data</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../test_runs/">Test runs</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../install/test_runs/">Test runs</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Modes</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../modes/execution_modes/">Parameter estimation modes</a>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../execution_modes/">Parameter estimation modes</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../modes/spatial_modes/">Spatial modes</a>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Spatial modes</a>
+    <ul class="current">
+    </ul>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Files</span></p>
@@ -114,11 +114,11 @@
     
       
         
-          <li>Installation and test cases &raquo;</li>
+          <li>Modes &raquo;</li>
         
       
     
-    <li>Test data</li>
+    <li>Spatial modes</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -129,13 +129,12 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="data-for-two-spatial-configurations">Data for two spatial configurations</h2>
-<p>To get you started with FUSE, we provide data for two test cases. They will enable you to test FUSE in its two spatial configurations: FUSE can be run for an individual catchment or on a grid (see <a href="../../../execution_modes/">Execution modes</a>).
-Download the data for the two test cases in order to <a href="/install/test_runs/">test FUSE</a>.</p>
-<h2 id="catchment-test-case">Catchment test case</h2>
-<p>Observed atmospheric forcing and streamflow estimates for the catchment <a href="https://waterdata.usgs.gov/nwis/inventory/?site_no=09066300&amp;agency_cd=USGS&amp;">Middle Creek near Minturn</a> in Colorado, USA  - data available <a href="https://dl.dropboxusercontent.com/s/f6omcgz8hsirlr0/fuse_catch.zip?dl=0">here [0.5MB]</a> for download. This catchment is part of the <a href="https://ncar.github.io/hydrology/datasets/CAMELS_timeseries">CAMELS data set</a>.  </p>
-<h2 id="grid-test-case">Grid test case</h2>
-<p>Atmospheric forcing simulated by a climate model on a 1/8th degree grid for a 58 x 28 grid cells domain - data available <a href="https://dl.dropboxusercontent.com/s/g5193e0n01ao33d/fuse_grid.zip?dl=0">here [42MB]</a> for download.</p>
+                <h2 id="spatial-modes">Spatial modes</h2>
+<p>FUSE can be run in two spatial modes:</p>
+<p><strong>Catchment mode:</strong> this mode is FUSE original mode, it runs FUSE for a single spatial unit and is ideal for rainfall-runoff modelling at the catchment scale. All the FUSE <a href="/modes/execution_modes">parameter estimation modes</a> are available for this mode.</p>
+<p><strong>Grid mode:</strong> this mode runs FUSE on a grid, it is designed to produce simulations over large domains and to conduct climate impact assessments driven by climate models. Spatially distributed atmospheric forcing is required and spatially distributed parameter values should be used. In this mode, model calibration using SCE is not possible, as daily gridded streamflow observations are not readily available. Instead, we recommend calibrating FUSE at the catchment scale, and transferring the entire parameter sets from donors catchments to individual grid cells. Note there is no lateral flow between the grid cells but runoff from adjacent cells can be routed over the entire domain using for instance <a href="https://mizuroute.readthedocs.io/en/develop/index.html">MizuRoute</a>.</p>
+<p>FUSE will automatically adapt to the spatial configuration of the input files. The catchment mode is actually a special case of the grid mode, as it essentially relies on a 1 x 1 grid. During its setup phase, FUSE will retrieve the <code>lat</code> and <code>lon</code> variables of the NetCDF forcing file and will then run on the grid they define. The output files will be produced using the same grid.</p>
+<p><strong>Elevation bands:</strong> FUSE can use <a href="/files/input_files">elevation bands</a> to account for the effect of topography on temperature and precipitation within each spatial unit, regardless of whether it corresponds to a catchment or a grid cell.</p>
               
             </div>
           </div>
@@ -143,10 +142,10 @@ Download the data for the two test cases in order to <a href="/install/test_runs
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../test_runs/" class="btn btn-neutral float-right" title="Test runs">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../files/file_manager/" class="btn btn-neutral float-right" title="File manager">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../install_fuse/" class="btn btn-neutral" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../execution_modes/" class="btn btn-neutral" title="Parameter estimation modes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -172,10 +171,10 @@ Download the data for the two test cases in order to <a href="/install/test_runs
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../install_fuse/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../execution_modes/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../test_runs/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../files/file_manager/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
