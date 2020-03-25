@@ -19,6 +19,7 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
   USE multiforce, only: latUnits,lonUnits               ! units string
   USE multiforce, only: timeUnits                       ! units string
   USE multistate, only: ncid_out                        ! NetCDF output file ID
+  USE multiforce, only: GRID_FLAG                       ! .true. if distributed
 
   IMPLICIT NONE
 
@@ -92,9 +93,13 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
     ! uncomment variables that should be written to output file
     IF (Q_ONLY) THEN
       WRITE_VAR=.FALSE.
+
+      IF(.NOT.GRID_FLAG) THEN ! do not write QOBS when running on grid
+        IF (TRIM(VNAME(IVAR)).EQ.'obsq')     WRITE_VAR=.TRUE.
+      END IF
+
       !IF (TRIM(VNAME(IVAR)).EQ.'ppt')      WRITE_VAR=.TRUE.
       !IF (TRIM(VNAME(IVAR)).EQ.'pet')      WRITE_VAR=.TRUE.
-      !IF (TRIM(VNAME(IVAR)).EQ.'obsq')     WRITE_VAR=.TRUE.
       IF (TRIM(VNAME(IVAR)).EQ.'evap_1')   WRITE_VAR=.TRUE.
       IF (TRIM(VNAME(IVAR)).EQ.'evap_2')   WRITE_VAR=.TRUE.
       IF (TRIM(VNAME(IVAR)).EQ.'q_instnt') WRITE_VAR=.TRUE.

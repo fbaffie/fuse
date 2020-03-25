@@ -7,7 +7,7 @@
 #========================================================================
 
 # Define core directory below which everything resides
-F_MASTER = /home/naddor/fuse/
+F_MASTER = /gpfs/ts0/home/na491/fuse/
 
 # Core directory that contains FUSE source code
 F_KORE_DIR = $(F_MASTER)build/FUSE_SRC/
@@ -211,10 +211,8 @@ ifeq "$(FC)" "gfortran"
 endif
 
 ifeq "$(FC)" "ifort"
- 	HDF_PATH  = /opt/hdf5
-	NCDF_PATH = /opt/netcdf4-intel
-	SZ_PATH = /opt/szip-2.1
-	Z_PATH = /opt/zlib-1.2.8
+	NCDF_PATH = /gpfs/ts0/shared/software/netCDF-Fortran/4.4.4-intel-2017a
+	HDF_PATH  = /gpfs/ts0/shared/software/HDF5/1.8.19-intel-2017a
 	LIBNETCDF = -lcurl -L$(NCDF_PATH)/lib -lnetcdff -lnetcdf -L$(HDF_PATH)/lib -lhdf5_hl -lhdf5 -L$(SZ_PATH)/lib -lsz -L$(Z_PATH)/lib -lz
 	INCNETCDF = -I$(NCDF_PATH)/include -I$(HDF_PATH)/include
 endif

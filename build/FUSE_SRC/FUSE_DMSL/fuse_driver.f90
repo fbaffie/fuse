@@ -26,7 +26,7 @@ USE model_defnames                                        ! defines the integer 
 USE multiforce, ONLY: forcefile,vname_aprecip             ! model forcing structures
 USE multiforce, ONLY: AFORCE, aValid                      ! time series of lumped forcing/response data
 USE multiforce, ONLY: nspat1, nspat2                      ! grid dimensions
-USE multiforce, only: GRID_FLAG                          ! .true. if distributed
+USE multiforce, only: GRID_FLAG                           ! .true. if distributed
 USE multiforce, ONLY: GFORCE, GFORCE_3d                   ! spatial arrays of gridded forcing data
 USE multiforce, only: ancilF, ancilF_3d                   ! ancillary forcing data
 USE multiforce, ONLY: valDat                              ! response data
