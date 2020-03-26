@@ -60,13 +60,19 @@
                     <li class="toctree-l1"><a class="reference internal" href="../../install/test_runs/">Test runs</a>
                     </li>
                 </ul>
-                <p class="caption"><span class="caption-text">Modes</span></p>
+                <p class="caption"><span class="caption-text">Modelling decisions</span></p>
                 <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../structure/">Model structure</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../execution_modes/">Parameter estimation modes</a>
+                    </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Spatial modes</a>
     <ul class="current">
     </ul>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../execution_modes/">Parameter estimation modes</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../numerical_methods/">Numerical methods</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Files</span></p>
@@ -85,11 +91,10 @@
                     <li class="toctree-l1"><a class="reference internal" href="../../modules/1_precip/">Precipitation</a>
                     </li>
                 </ul>
+                <p class="caption"><span class="caption-text">Extras</span></p>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../../tofu/">Tools for FUSE</a>
                     </li>
-                </ul>
-                <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../../camels_for_fuse/">CAMELS for FUSE</a>
                     </li>
                 </ul>
@@ -114,7 +119,7 @@
     
       
         
-          <li>Modes &raquo;</li>
+          <li>Modelling decisions &raquo;</li>
         
       
     
@@ -133,7 +138,7 @@
 <p>FUSE can be run in two spatial modes:</p>
 <p><strong>Catchment mode:</strong> this mode is FUSE original mode, it runs FUSE for a single spatial unit and is ideal for rainfall-runoff modelling at the catchment scale. All the FUSE <a href="/modes/execution_modes">parameter estimation modes</a> are available for this mode.</p>
 <p><strong>Grid mode:</strong> this mode runs FUSE on a grid, it is designed to produce simulations over large domains and to conduct climate impact assessments driven by climate models. Spatially distributed atmospheric forcing is required and spatially distributed parameter values should be used. In this mode, model calibration using SCE is not possible, as daily gridded streamflow observations are not readily available. Instead, we recommend calibrating FUSE at the catchment scale, and transferring the entire parameter sets from donors catchments to individual grid cells. Note there is no lateral flow between the grid cells but runoff from adjacent cells can be routed over the entire domain using for instance <a href="https://mizuroute.readthedocs.io/en/develop/index.html">MizuRoute</a>.</p>
-<p>FUSE will automatically adapt to the spatial configuration of the input files. The catchment mode is actually a special case of the grid mode, as it essentially relies on a 1 x 1 grid. During its setup phase, FUSE will retrieve the <code>lat</code> and <code>lon</code> variables of the NetCDF forcing file and will then run on the grid they define. The output files will be produced using the same grid.</p>
+<p>FUSE will automatically adapt to the spatial configuration of the input files. The catchment mode is a special case of the grid mode, as it simply relies on a 1 x 1 grid. During its setup phase, FUSE will retrieve the <code>lat</code> and <code>lon</code> variables of the NetCDF forcing file and will then run on the grid they define. The output files will be produced using the same grid.</p>
 <p><strong>Elevation bands:</strong> FUSE can use <a href="/files/input_files">elevation bands</a> to account for the effect of topography on temperature and precipitation within each spatial unit, regardless of whether it corresponds to a catchment or a grid cell.</p>
               
             </div>
@@ -142,10 +147,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../execution_modes/" class="btn btn-neutral float-right" title="Parameter estimation modes">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../numerical_methods/" class="btn btn-neutral float-right" title="Numerical methods">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../install/test_runs/" class="btn btn-neutral" title="Test runs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../execution_modes/" class="btn btn-neutral" title="Parameter estimation modes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -171,10 +176,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../install/test_runs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../execution_modes/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../execution_modes/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../numerical_methods/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
