@@ -246,8 +246,8 @@ MODULE FUSE_RMSE_MODULE
       IF(ierr/=0)THEN; PRINT*, TRIM(cmessage); STOP; ENDIF
 
       ! compute potential ET
-      IF(computePET) CALL getPETgrid(ierr,cmessage)
-      IF(ierr/=0)THEN; PRINT*, TRIM(cmessage); STOP; ENDIF
+      ! IF(computePET) CALL getPETgrid(ierr,cmessage)
+      ! IF(ierr/=0)THEN; PRINT*, TRIM(cmessage); STOP; ENDIF
 
       ! loop through grid points and run the model for one time step
       DO iSpat2=1,nSpat2
