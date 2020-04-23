@@ -1,4 +1,6 @@
-        !COMPILER-GENERATED INTERFACE MODULE: Thu Sep  1 11:18:02 2016
+        !COMPILER-GENERATED INTERFACE MODULE: Tue Apr 14 11:54:01 2020
+        ! This source file is for reference only and may not completely
+        ! represent the generated interface used by the compiler.
         MODULE GAMMLN_S__genmod
           INTERFACE 
             FUNCTION GAMMLN_S(XX)

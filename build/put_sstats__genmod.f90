@@ -1,9 +1,10 @@
-        !COMPILER-GENERATED INTERFACE MODULE: Thu Sep  1 11:18:05 2016
+        !COMPILER-GENERATED INTERFACE MODULE: Tue Apr 14 11:54:05 2020
+        ! This source file is for reference only and may not completely
+        ! represent the generated interface used by the compiler.
         MODULE PUT_SSTATS__genmod
           INTERFACE 
-            SUBROUTINE PUT_SSTATS(IPAR,IMOD)
+            SUBROUTINE PUT_SSTATS(IPAR)
               INTEGER(KIND=4), INTENT(IN) :: IPAR
-              INTEGER(KIND=4), INTENT(IN) :: IMOD
             END SUBROUTINE PUT_SSTATS
           END INTERFACE 
         END MODULE PUT_SSTATS__genmod

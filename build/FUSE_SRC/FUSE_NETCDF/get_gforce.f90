@@ -442,12 +442,12 @@ contains
  end do  ! (loop thru forcing variables)
 
  ! make a few safety tests
- !if( ANY(MFORCE%PPT.lt.0.0)) then; PRINT *, 'Negative precipitation in input file'; stop; endif
- !if( ANY(MFORCE%PPT.gt.1000.0)) then; PRINT *, 'Precipitation greater than 1000 in input file'; stop; endif
- !if( ANY(MFORCE%PET.lt.0.0)) then; PRINT *, 'Negative PET in input file'; stop; endif
- !if( ANY(MFORCE%PET.gt.1000.0)) then; PRINT *, 'PET greater than 1000 in input file'; stop; endif
- !if( ANY(MFORCE%TEMP.lt.-100.0)) then; PRINT *, 'Temperature lower than -100 in input file'; stop; endif
- !if( ANY(MFORCE%TEMP.gt.100.0)) then; PRINT *, 'Temperature greater than 100 in input file'; stop; endif
+ !if( ANY(gForce_3d%PPT.lt.0.0)) then; PRINT *, 'Negative precipitation in input file'; stop; endif
+ !if( ANY(gForce_3d%PPT.gt.1000.0)) then; PRINT *, 'Precipitation greater than 1000mm/day in input file'; stop; endif
+ !if( ANY(gForce_3d%PET.lt.0.0)) then; PRINT *, 'Negative PET in input file'; stop; endif
+ !if( ANY(gForce_3d%PET.gt.1000.0)) then; PRINT *, 'PET greater than 1000mm/day in input file'; stop; endif
+ !if( ANY(gForce_3d%TEMP.lt.-100.0)) then; PRINT *, 'Temperature lower than -100°C in input file'; stop; endif
+ !if( ANY(gForce_3d%TEMP.gt.100.0)) then; PRINT *, 'Temperature greater than 100C in input file'; stop; endif
 
  ! deallocate space for gTemp
  deallocate(gTemp, stat=ierr)

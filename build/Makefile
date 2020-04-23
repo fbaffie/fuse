@@ -237,16 +237,15 @@ URS_DRIVER__EX = fuse.exe
 # PART 3: Compile the puppy
 #========================================================================
 
-# Define flags
-ifeq "$(FC)" "gfortran"
- FLAGS = -static -Wall -g -ffree-line-length-none
+# Define flags - see e.g. https://github.com/NCAR/summa/blob/develop/build/Makefile
+ifeq "$(FC)" "ifort"
+ FLAGS_NORMA = -O3 -FR -auto -fltconsistency -fpe0
+ FLAGS_DEBUG = -O0 -p -g -debug -warn all -check all -FR -auto -WB -traceback -fltconsistency -fpe0
 endif
 
-ifeq "$(FC)" "ifort"
- FLAGS_NORMA = -fast
- # FLAGS_NORMA = -O3 -xHost # nearly as fast as -fast but more stable
- FLAGS_DEBUG = -debug -debug-parameters all -traceback -ftrapuv -g -fpe0 -u -check all -check noarg_temp_created -CB
- # FLAGS_DEBUG = -debug all -g -O0 -check bounds -check arg_temp_created -traceback -fpe0 -ftrapuv -heap-arrays
+ifeq "$(FC)" "gfortran"
+ FLAGS_NORMA = -O3 -ffree-line-length-none -fmax-errors=0 $(FLAGS_OMP)
+ FLAGS_DEBUG = -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds
 endif
 
 ifeq "$(FC)" "pgf90"
@@ -259,7 +258,7 @@ all: compile_URS install_URS clean
 
 # compile FUSE into a static library
 compile_URS:
-	$(FC) $(FLAGS_DEBUG) $(FUSE_ALL) $(URS_DRIVER) \
+	$(FC) $(FLAGS_NORMA) $(FUSE_ALL) $(URS_DRIVER) \
 	$(LIBNETCDF) $(INCNETCDF) -o $(URS_DRIVER__EX)
 
 # Remove object files

@@ -1,10 +1,10 @@
-        !COMPILER-GENERATED INTERFACE MODULE: Thu Sep  1 11:18:03 2016
+        !COMPILER-GENERATED INTERFACE MODULE: Tue Apr 14 11:54:03 2020
+        ! This source file is for reference only and may not completely
+        ! represent the generated interface used by the compiler.
         MODULE UNIQUEMODL__genmod
           INTERFACE 
-            SUBROUTINE UNIQUEMODL(NMOD,ERR,MESSAGE)
-              INTEGER(KIND=4), INTENT(OUT) :: NMOD
-              INTEGER(KIND=4), INTENT(OUT) :: ERR
-              CHARACTER(*), INTENT(OUT) :: MESSAGE
+            SUBROUTINE UNIQUEMODL(NMOD)
+              INTEGER(KIND=4) :: NMOD
             END SUBROUTINE UNIQUEMODL
           END INTERFACE 
         END MODULE UNIQUEMODL__genmod
