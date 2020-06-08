@@ -15,7 +15,6 @@
   <link rel="stylesheet" href="../../css/theme.css" />
   <link rel="stylesheet" href="../../css/theme_extra.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
-  <link href="../../css/version-select.css" rel="stylesheet" />
   
   <script>
     // Current page data
@@ -143,34 +142,30 @@
                 <h2 id="notes-on-the-computing-environment">Notes on the computing environment</h2>
 <p>This page will guide you through the installation of FUSE. Before you get started, please note that:</p>
 <ol>
-<li>below we assume that you will be compiling and running FUSE in a Linux/UNIX environment - for OS X/macOS, have a look at this <a href="https://summa.readthedocs.io/en/latest/installation/SUMMA_on_OS_X/">page</a> of the SUMMA manual,</li>
-<li>you will need a Fortran compiler:  FUSE was developed and tested using <code>ifort</code>, which we recommend if you have no previous experience with Fortran compilers - note that to use <code>ifort</code> you might have to load the associated module (try <code>module avail</code> and then <code>module add [your/module/version/compiler]</code>),</li>
-<li>you will need access to the NetCDF and HDF libraries: use the libraries compiled with the compiler you selected above, you might have to load them - once loaded, try <code>module show [your/module/version/compiler]</code> this should provide the path to the libraries. Note that these paths are machine-dependent, so paths for another machine probably will not work on your machine.</li>
+<li>below we assume that you will be compiling and running FUSE in a Linux/UNIX environment - for OS X/macOS, see this <a href="https://summa.readthedocs.io/en/latest/installation/SUMMA_on_OS_X/">page</a> of the SUMMA manual,</li>
+<li>you will need a Fortran compiler: FUSE was developed and tested using <code>ifort</code>, which we recommend if you have no previous experience with Fortran compilers - note that on HPCs, you might have to load specific modules to use the compiler (try <code>module avail</code> and then <code>module add [your/module/version/compiler]</code>),</li>
+<li>you will need access to the NetCDF and HDF libraries: use the libraries compiled with the compiler you selected above, the path to these libraries are machine dependent (so paths for another machine probably will not work on your machine). To find these paths, ask  administrators or users of your machine, or, if you have to load modules containing the libraries, once loaded, type <code>module show [your/module/version/compiler]</code>.</li>
 </ol>
-<h2 id="1-fork-the-fuse-repository">1. Fork the FUSE repository</h2>
+<h2 id="1-fork-the-fuse-repository-and-adapt-the-makefile">1. Fork the FUSE repository and adapt the Makefile</h2>
 <ol>
-<li>Fork the <a href="https://github.com/naddor/fuse">FUSE repository</a> to a directory <code>$(MASTER)</code> on your machine (see the <a href="http://summa.readthedocs.io/en/latest/development/SUMMA_and_git/">SUMMA manual</a> for a step-by-step procedure)</li>
-<li>Change directory to <code>$(MASTER)/build/</code> and edit the <code>Makefile</code> by:<ul>
-<li>defining the name of the master directory (line 11),</li>
-<li>defining the fortran compiler (line 27),</li>
-<li>defining the path to the NetCDF and HDF libraries (lines 34-35).</li>
+<li>Fork the <a href="https://github.com/naddor/fuse">FUSE repository</a> to a directory <code>$(MASTER)</code> on your machine (see the <a href="http://summa.readthedocs.io/en/latest/development/SUMMA_and_git/">SUMMA manual</a> for a step-by-step procedure).</li>
+<li>Edit the <code>Makefile</code> in <code>$(MASTER)/build/</code> by defining:<ul>
+<li>the name of the master directory (line 10),</li>
+<li>the fortran compiler (lines 31-32, optional, we recommend that you define it when compiling the code, see 1. below),</li>
+<li>the path to the NetCDF and HDF libraries (<code>NCDF_PATH</code> and <code>HDF_PATH</code>, lines 40-52, see 3. above, only provide the paths associated with compiler you selected).</li>
 </ul>
 </li>
 </ol>
-<h2 id="2-compile-sce">2. Compile SCE</h2>
+<h2 id="2-compile-fuse">2. Compile FUSE</h2>
+<p>In spring 2020, we spruced up the FUSE Makefile. Until then, it used to require the separate compilation of the <em>shuffled complex evolution</em> (SCE, used for automated parameter estimation), as its code is in Fortran77. Now the SCE compilation is taken care of by the Makefile. To compile FUSE:</p>
 <ol>
-<li>FUSE relies on an algorithm called <em>shuffled complex evolution</em> (SCE) for automated parameter estimation. SCE code (<code>$(MASTER)/build/FUSE_SRC/FUSE_SCE/sce.f</code>) was written in Fortran 77, so it must be compiled separately, before FUSE is compiled. If you use <code>ifort</code>, try the following flags:</li>
+<li>
+<p>Change directory to <code>$(MASTER)/build/</code> and compile FUSE by typing <code>make FC=ifort</code> (or <code>make FC=gfortran</code> if you prefer to use <code>gfortran</code>).</p>
+</li>
+<li>
+<p>Try running FUSE by typing <code>./fuse.exe</code>. If the output is <code>1st command-line argument is missing (fileManager)</code>, you have probably compiled FUSE correctly. But there might still be issues related to the libraries. To find out, download the <a href="/install/test_data/">test data</a> and run the <a href="/install/test_data/">test cases</a>.</p>
+</li>
 </ol>
-<pre><code>ifort -O2 -c -fixed sce_16plus.f
-</code></pre>
-
-<p>If necessary, rename the compiled file, so that it can be found by the <code>Makefile</code>, which by default will be looking for a file named <code>sce_16plus.o</code>.</p>
-<h2 id="3-compile-fuse">3. Compile FUSE</h2>
-<ol>
-<li>Compile the FUSE code (type <code>make</code>).</li>
-<li>Change to <code>$(MASTER)/bin/</code> and try running FUSE by typing <code>./fuse.exe</code>.</li>
-</ol>
-<p>If the output is <code>1st command-line argument is missing (fileManager)</code>, you have probably compiled FUSE correctly. </p>
 <p><a id="infile_file_formats"></a></p>
               
             </div>
@@ -219,7 +214,6 @@
 </div>
     <script>var base_url = '../..';</script>
     <script src="../../js/theme.js" defer></script>
-      <script src="../../js/version-select.js" defer></script>
       <script src="../../search/main.js" defer></script>
     <script defer>
         window.onload = function () {
