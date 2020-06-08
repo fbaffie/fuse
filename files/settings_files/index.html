@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../../css/theme.css" />
   <link rel="stylesheet" href="../../css/theme_extra.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="../../css/version-select.css" rel="stylesheet" />
   
   <script>
     // Current page data
@@ -60,9 +61,11 @@
                     <li class="toctree-l1"><a class="reference internal" href="../../install/test_runs/">Test runs</a>
                     </li>
                 </ul>
-                <p class="caption"><span class="caption-text">Modelling decisions</span></p>
+                <p class="caption"><span class="caption-text">Execution</span></p>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../../modes/overview/">Overview</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../modes/structure/">Modelling decisions</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../../modes/structure/">Model structure</a>
                     </li>
@@ -91,9 +94,9 @@
                 </ul>
                 <p class="caption"><span class="caption-text">Extras</span></p>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../tofu/">Tools for FUSE</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../extras/tofu/">Tools for FUSE</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../camels_for_fuse/">CAMELS for FUSE</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../extras/camels_for_fuse/">CAMELS for FUSE</a>
                     </li>
                 </ul>
       </div>
@@ -135,6 +138,9 @@
                 <p>The <code>settings</code> directory must contain the following files (provided for the catchment case study):</p>
 <ol>
 <li>
+<p>A file called <code>input_info.txt</code> providing metadata for the NetCDF input file. It defines the name and units of the variables in the input file.</p>
+</li>
+<li>
 <p>The file <code>M_DECISIONS</code> (called <code>fuse_zDecisions_902.txt</code> in the case studies) describes the different options available in the FUSE modeling framework. These modeling decisions are described in detail by <a href="http://dx.doi.org/10.1029/2007WR006735">Clark et al. (WRR, 2008)</a>, except decision 9 described in <a href="http://dx.doi.org/10.1002/2014WR016736">Henn et al. (WRR, 2015)</a>.</p>
 </li>
 <li>
@@ -142,9 +148,6 @@
 </li>
 <li>
 <p>The file <code>MOD_NUMERIX</code> (called <code>fuse_zNumerix.txt</code> in the case studies) defines decisions regarding the numerical solution technique. Examples of the impact of these decisions are described by <a href="http://dx.doi.org/10.1029/2009WR008894">Clark and Kavetski (WRR 2010)</a> and <a href="http://dx.doi.org/10.1029/2009WR008896">Kavetski and Clark (WRR 2010)</a>.</p>
-</li>
-<li>
-<p>The file <code>FORCINGINFO</code> (called <code>input_info.txt</code> in the case studies) provides metadata for the NetCDF input file. It defines the name and units of the variables in the input file.</p>
 </li>
 </ol>
               
@@ -192,6 +195,7 @@
 </div>
     <script>var base_url = '../..';</script>
     <script src="../../js/theme.js" defer></script>
+      <script src="../../js/version-select.js" defer></script>
       <script src="../../search/main.js" defer></script>
     <script defer>
         window.onload = function () {

@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../../css/theme.css" />
   <link rel="stylesheet" href="../../css/theme_extra.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="../../css/version-select.css" rel="stylesheet" />
   
   <script>
     // Current page data
@@ -60,9 +61,11 @@
                     <li class="toctree-l1"><a class="reference internal" href="../../install/test_runs/">Test runs</a>
                     </li>
                 </ul>
-                <p class="caption"><span class="caption-text">Modelling decisions</span></p>
+                <p class="caption"><span class="caption-text">Execution</span></p>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../../modes/overview/">Overview</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../modes/structure/">Modelling decisions</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../../modes/structure/">Model structure</a>
                     </li>
@@ -93,9 +96,9 @@
                 </ul>
                 <p class="caption"><span class="caption-text">Extras</span></p>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../tofu/">Tools for FUSE</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../extras/tofu/">Tools for FUSE</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../camels_for_fuse/">CAMELS for FUSE</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../extras/camels_for_fuse/">CAMELS for FUSE</a>
                     </li>
                 </ul>
       </div>
@@ -135,13 +138,7 @@
             <div class="section">
               
                 <h2 id="file-manager">File manager</h2>
-<p><strong>Purpose:</strong> To run, FUSE needs use <code>FILEMANAGER</code>, which defines the paths to the FUSE <code>settings</code>, <code>input</code>, <code>output</code> directories, as well as other settings essential to run FUSE (described in Sections C and D).</p>
-<ol>
-<li>Move the file <code>fm_catch.txt</code> provided for the catchment case study to <code>$(MASTER)/bin/</code>. This is the <code>FILEMANAGER</code> for the catchment case study.</li>
-<li>Update the lines 3 to 5 of <code>fm_catch.txt</code> using the path of the <code>fuse_catch</code> directory on your machine.</li>
-</ol>
-<p><strong>Format:</strong> ASCII</p>
-<p><strong>Example:</strong></p>
+<p>We start with the file manager, as it is the corner stone enabling FUSE to run. It defines the paths to the main directories (<code>input</code>,<code>output</code>,<code>settings</code>) and the name of the files required to run FUSE.</p>
               
             </div>
           </div>
@@ -187,6 +184,7 @@
 </div>
     <script>var base_url = '../..';</script>
     <script src="../../js/theme.js" defer></script>
+      <script src="../../js/version-select.js" defer></script>
       <script src="../../search/main.js" defer></script>
     <script defer>
         window.onload = function () {
