@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>Numerical methods - FUSE manual</title>
+  <title>MPI - FUSE manual</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../../css/theme.css" />
@@ -18,8 +18,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Numerical methods";
-    var mkdocs_page_input_path = "modes/numerical_methods.md";
+    var mkdocs_page_name = "MPI";
+    var mkdocs_page_input_path = "extras/mpi.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -61,20 +61,18 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Execution</span></p>
-                <ul class="current">
-                    <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview</a>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../modes/overview/">Overview</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../structure/">Modelling decisions</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../modes/structure/">Modelling decisions</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../structure/">Model structure</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../modes/structure/">Model structure</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../execution_modes/">Parameter estimation modes</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../modes/execution_modes/">Parameter estimation modes</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../spatial_modes/">Spatial modes</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../modes/spatial_modes/">Spatial modes</a>
                     </li>
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Numerical methods</a>
-    <ul class="current">
-    </ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../modes/numerical_methods/">Numerical methods</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Files</span></p>
@@ -94,12 +92,14 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Extras</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../extras/mpi/">MPI</a>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">MPI</a>
+    <ul class="current">
+    </ul>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../extras/tofu/">Tools for FUSE</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../tofu/">Tools for FUSE</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../extras/camels_for_fuse/">CAMELS for FUSE</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../camels_for_fuse/">CAMELS for FUSE</a>
                     </li>
                 </ul>
       </div>
@@ -123,14 +123,14 @@
     
       
         
-          <li>Execution &raquo;</li>
+          <li>Extras &raquo;</li>
         
       
     
-    <li>Numerical methods</li>
+    <li>MPI</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/naddor/fuse/edit/master/docs/modes/numerical_methods.md"
+        <a href="https://github.com/naddor/fuse/edit/master/docs/extras/mpi.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -141,7 +141,13 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="numerical-methods">Numerical methods</h2>
+                <h2 id="parallel-computing-with-fuse">Parallel computing with FUSE</h2>
+<p>When running FUSE over large (e.g. greater than 10'000 grid cells) domains, we recommend distributing the simulations over multiple cores using FUSE MPI (Message Passing Interface) feature. To enable MPI, compile FUSE as follows:</p>
+<p><code>make FC=your_compiler MODE=distributed</code></p>
+<p>With the current Makefile, replacing <code>your_compiler</code> by <code>ifort</code> or <code>fortran</code>, will result in <code>mpif90</code> and <code>mpiifort</code> being used, respectively (we  have successfully tested both). The resulting executable will be <code>fuse_mpi.exe</code>. You will need to specify on how many processors (<code>np</code>) FUSE should run, the command is system dependent, here is an example for 16 processors, you are likely to need additional options for it to run on your system:</p>
+<p><code>mpirun -np 16 ./fuse_mpi.exe fm_900_conus_ca_mx_5d.txt maurer_ca_mx_1980_1989 run_def &gt; log_5d.txt</code></p>
+<p>The simulations will be stored in <code>np</code> individual files (horizontal transects of the domain), which can be stitch together using <code>xarray</code> (note that this step is memory intensive):</p>
+<p><code>python -c 'import xarray as xr; xr.open_mfdataset("*runs*",combine="by_coords").to_netcdf("combined_run.nc")'</code></p>
               
             </div>
           </div>
@@ -149,10 +155,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../files/file_manager/" class="btn btn-neutral float-right" title="File manager">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../tofu/" class="btn btn-neutral float-right" title="Tools for FUSE">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../spatial_modes/" class="btn btn-neutral" title="Spatial modes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../modules/1_precip/" class="btn btn-neutral" title="Precipitation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -180,10 +186,10 @@
           <a href="https://github.com/naddor/fuse/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../spatial_modes/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../../modules/1_precip/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../../files/file_manager/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../tofu/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
