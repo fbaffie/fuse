@@ -159,7 +159,7 @@
 </li>
 </ol>
 <h2 id="2-compile-fuse">2. Compile FUSE</h2>
-<p>In spring 2020, we spruced up the FUSE Makefile. Until then, it used to require the separate compilation of the <em>shuffled complex evolution</em> (SCE, used for automated parameter estimation), as its code is in Fortran77. Now the SCE compilation is taken care of by the Makefile. To compile FUSE:</p>
+<p>In spring 2020, we spruced up the FUSE Makefile. Until then, it used to require the separate compilation of the shuffled complex evolution (SCE, used for automated parameter estimation), as SCE code is in Fortran77. Now, SCE compilation is taken care of by the Makefile. To compile FUSE:</p>
 <ol>
 <li>
 <p>Change directory to <code>$(MASTER)/build/</code> and compile FUSE by typing <code>make FC=ifort</code> (or <code>make FC=gfortran</code> if you prefer to use <code>gfortran</code>).</p>
