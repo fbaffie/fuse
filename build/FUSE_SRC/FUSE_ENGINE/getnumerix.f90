@@ -34,13 +34,12 @@ err=0; message="GETNUMERIX/ok"
 CFILE = TRIM(SETNGS_PATH)//TRIM(MOD_NUMERIX)      ! control file info shared in MODULE ddirectory
 INQUIRE(FILE=CFILE,EXIST=LEXIST)  ! check that control file exists
 IF (.NOT.LEXIST) THEN
- message="f-GETNUMERIX/model numerix file '"//trim(CFILE)//"' does not exist"
- err=100; return
-ELSE
-  PRINT *, 'Reading numeric decisions from', trim(CFILE)
+  print *, "Numerix file '"//trim(CFILE)//"' does not exist"
+  STOP
 ENDIF
 
 ! open up model numerix file
+PRINT *, 'Reading numeric decisions from', trim(CFILE)
 CALL getSpareUnit(IUNIT,err,message) ! make sure IUNIT is actually available
 IF (err/=0) THEN
  message="f-GETNUMERIX/weird/&"//message

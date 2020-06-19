@@ -36,14 +36,14 @@ MROUTE%Q_INSTNT = W_FLUX%QSURF + W_FLUX%OFLOW_1 + W_FLUX%QINTF_1 + W_FLUX%OFLOW_
 if (W_FLUX%QSURF.lt.SNEG .or. W_FLUX%OFLOW_1.lt.SNEG .or. W_FLUX%QINTF_1.lt.SNEG .or. &
     W_FLUX%OFLOW_2.lt.SNEG .or. W_FLUX%QBASE_2.lt.SNEG) THEN
 
-    !PRINT *, 'W_FLUX%QSURF = ', W_FLUX%QSURF
-    !PRINT *, 'W_FLUX%OFLOW_1 = ', W_FLUX%OFLOW_1
-    !PRINT *, 'W_FLUX%QINTF_1 = ', W_FLUX%QINTF_1
-    !PRINT *, 'W_FLUX%OFLOW_2 = ', W_FLUX%OFLOW_2
-    !PRINT *, 'W_FLUX%QBASE_2 = ', W_FLUX%QBASE_2
-    !PRINT *, 'MROUTE%Q_INSTNT = ', MROUTE%Q_INSTNT
+    PRINT *, 'W_FLUX%QSURF = ', W_FLUX%QSURF
+    PRINT *, 'W_FLUX%OFLOW_1 = ', W_FLUX%OFLOW_1
+    PRINT *, 'W_FLUX%QINTF_1 = ', W_FLUX%QINTF_1
+    PRINT *, 'W_FLUX%OFLOW_2 = ', W_FLUX%OFLOW_2
+    PRINT *, 'W_FLUX%QBASE_2 = ', W_FLUX%QBASE_2
+    PRINT *, 'MROUTE%Q_INSTNT = ', MROUTE%Q_INSTNT
 
-    !stop 'negative flux in q_overland'
+    stop 'negative flux in q_overland'
 
   END IF
 ! ---------------------------------------------------------------------------------------

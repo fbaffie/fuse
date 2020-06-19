@@ -252,8 +252,10 @@ DO iSpat2=1,nSpat2
 
 		 if (abs(sum(MBANDS_INFO_3d(iSpat1,iSpat2,:)%AF)-1).GT.1E-2) then ! check that area fraction sum to 1
 
-		 	print *, "The area fraction of all the elevation bands do not add up to 1"
-			print *, 'Difference with 1 = ', abs(sum(MBANDS_INFO_3d(iSpat1,iSpat2,:)%AF)-1)
+			print *, "Error: area fraction of elevation bands do not sum to 1"
+			print *, "Spatial indices:",iSpat1, iSpat2
+			print *, 'Mean elevation',me_TEMP(iSpat1,iSpat2,:)
+			print *, 'Area fraction', MBANDS_INFO_3d(iSpat1,iSpat2,:)%AF
 			stop
 
 		 end if
