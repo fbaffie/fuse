@@ -1,5 +1,5 @@
 site_name: FUSE manual
-repo_url: https://github.com/naddor/fuse
+repo_url: https://github.com/fbaffie/fuse
 docs_dir: docs
 theme:
   name: readthedocs
