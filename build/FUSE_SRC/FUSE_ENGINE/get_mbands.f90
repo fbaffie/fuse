@@ -226,10 +226,11 @@ ALLOCATE(Z_FORCING_grid(nspat1,nspat2),MBANDS_INFO_3d(nspat1,nspat2,n_bands),&
 				 AF_TEMP(nspat1,nspat2,n_bands),ME_TEMP(nspat1,nspat2,n_bands),&
 				 elev_mask(nspat1,nspat2),STAT=IERR(1))
 
-IF (ANY(IERR.NE.0)) THEN
- message="f-GET_MBANDS/problem allocating elevation band data structures"
- err=100; return
-ENDIF
+
+!IF (ANY(IERR.NE.0)) THEN
+ !message="f-GET_MBANDS/problem allocating elevation band data structures"
+ !err=100; return
+!ENDIF
 
 ! import data into temporary stuctures
 err = nf90_get_var(NCID_EB, ivarid_af, AF_TEMP, start=(/1,startSpat2,1/), count=(/nSpat1,nSpat2,n_bands/)); CALL HANDLE_ERR(err)
@@ -238,6 +239,8 @@ if(err/=0)then; message=trim(message)//trim(nf90_strerror(err)); return; endif
 ! import data into temporary stuctures
 err = nf90_get_var(NCID_EB, ivarid_me, me_TEMP, start=(/1,startSpat2,1/), count=(/nSpat1,nSpat2,n_bands/)); CALL HANDLE_ERR(err)
 if(err/=0)then; message=trim(message)//trim(nf90_strerror(err)); return; endif
+
+PRINT *, 'Populating elevation bands'
 
 ! populate MBANDS_INFO_3d, Z_FORCING_grid and elev_mask
 DO iSpat2=1,nSpat2
