@@ -240,8 +240,8 @@ ifeq "$(FC)" "gfortran"
 endif
 
 # select a set of flags
-FLAGS = $(FLAGS_NORMA)
-#FLAGS = $(FLAGS_DEBUG)
+# FLAGS = $(FLAGS_NORMA)
+FLAGS = $(FLAGS_DEBUG)
 
 # MPI: FUSE with MPI has been compiled successfully with mpif90 and mpiifort.
 # Note: override must be specifed to enable FC passed as argument to be overridden

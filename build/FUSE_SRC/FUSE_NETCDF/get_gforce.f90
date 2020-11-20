@@ -163,7 +163,7 @@ contains
 
  ENDIF
 
- print*, 'spatial dimensions of the grid= ', nSpat1, 'x' ,nSpat2
+ print*, 'spatial dimensions of the grid (nSpat1 x nSpat2)= ', nSpat1, 'x' ,nSpat2
  print*, 'NA_VALUE = ', NA_VALUE
  print*, 'GRID_FLAG = ', GRID_FLAG
 

@@ -30,6 +30,7 @@ MODULE FUSE_RMSE_MODULE
     USE multiforce, ONLY: numtim_sub_cur                     ! length of current subperiod
     USE multiforce, ONLY: sim_beg,sim_end                    ! timestep indices
     USE multiforce, ONLY: eval_beg,eval_end                  ! timestep indices
+    USE multiforce,only:latitude,longitude                   ! dimension arrays
 
     USE multiforce, ONLY:nspat1,nspat2                       ! spatial dimensions
     USE multiforce, ONLY:ncid_var                            ! NetCDF ID for forcing variables
@@ -207,7 +208,12 @@ MODULE FUSE_RMSE_MODULE
               MFORCE = gForce_3d(iSpat1,iSpat2,itim_sub)
 
               ! forcing sanity checks
-              if(MFORCE%PPT.lt.0.0) then; PRINT *, 'Negative precipitation in input file:',iSpat1,iSpat2,MFORCE%PPT; stop; endif
+              if(MFORCE%PPT.lt.0.0) then
+                PRINT *, 'Negative precipitation in input file:',MFORCE%PPT
+                PRINT *, 'Cell indices:',iSpat1,iSpat2
+                PRINT *, 'Cell lon lat:',longitude(iSpat1),latitude(iSpat2)
+                PRINT *, 'Elevation bands:',MBANDS_INFO_3d(iSpat1,iSpat2,:)%Z_MID
+              stop; endif
               if(MFORCE%PPT.gt.5000.0) then; PRINT *, 'Precipitation greater than 5000 in input file:',iSpat1,iSpat2,MFORCE%PPT; stop; endif
               if(MFORCE%PET.lt.0.0) then; PRINT *, 'Negative PET in input file'; stop; endif
               if(MFORCE%PET.gt.100.0) then; PRINT *, 'PET greater than 100 in input file'; stop; endif
@@ -254,7 +260,12 @@ MODULE FUSE_RMSE_MODULE
 
               ! runoff sanity check
               IF (MROUTE%Q_ROUTED.LT.0._sp) STOP 'Q_ROUTED is less than zero'
-              IF (MROUTE%Q_ROUTED.GT.1000._sp) STOP 'Q_ROUTED is enormous'
+
+              IF (MROUTE%Q_ROUTED.GT.5000._sp) then
+                PRINT *, 'Q_ROUTED is enormous:',MROUTE%Q_ROUTED
+                PRINT *, 'Cell indices:',iSpat1,iSpat2
+                PRINT *, 'Cell lon lat:',longitude(iSpat1),latitude(iSpat2)
+              stop; endif
 
               ! transfer simulations to corresponding 3D structures
               ! note that the first time step of gState_3d and MBANDS_VAR_4d is defined by initialisation
