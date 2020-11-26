@@ -80,7 +80,7 @@ IMPLICIT NONE
 ! ---------------------------------------------------------------------------------------
 ! GET COMMAND-LINE ARGUMENTS...
 ! ---------------------------------------------------------------------------------------
-CHARACTER(LEN=64)                      :: DatString          ! string defining forcing data
+CHARACTER(LEN=256)                      :: DatString          ! string defining forcing data
 CHARACTER(LEN=256)                      :: dom_id             ! ID of the domain
 CHARACTER(LEN=10)                      :: fuse_mode='      ' ! fuse execution mode (run_def, run_best, run_pre, calib_sce)
 CHARACTER(LEN=64)                      :: file_para_list     ! txt file containing list of parameter sets
@@ -173,7 +173,7 @@ mpi_nprocesses = 1
 ! READ COMMAND LINE ARGUMENTS
 ! ---------------------------------------------------------------------------------------
 ! read command-line arguments
-CALL GETARG(1,DatString)  ! string defining forcinginfo file
+CALL GETARG(1,DatString)  ! file manager
 CALL GETARG(2,dom_id)     ! ID of the domain
 CALL GETARG(3,fuse_mode)  ! fuse execution mode (run_def, run_best, calib_sce)
 IF(TRIM(fuse_mode).EQ.'run_pre')  CALL GETARG(4,file_para_list)  ! fuse execution mode txt file containing list of parameter sets
@@ -199,7 +199,7 @@ ENDIF
 ! ---------------------------------------------------------------------------------------
 
 ! set path to fuse_file_manager
-FFMFILE=DatString ! must be in bin folder and you must be in bin to run FUSE - TODO read argument to FFMFILE directly
+FFMFILE=DatString ! must be in bin folder and you must be in bin to run FUSE
 
 ! set directories and filenames for control files
 call fuse_SetDirsUndPhiles(fuseFileManagerIn=FFMFILE,err=err,message=message)

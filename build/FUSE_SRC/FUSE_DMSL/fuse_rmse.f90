@@ -214,6 +214,7 @@ MODULE FUSE_RMSE_MODULE
                 PRINT *, 'Cell lon lat:',longitude(iSpat1),latitude(iSpat2)
                 PRINT *, 'Elevation bands:',MBANDS_INFO_3d(iSpat1,iSpat2,:)%Z_MID
               stop; endif
+              
               if(MFORCE%PPT.gt.5000.0) then; PRINT *, 'Precipitation greater than 5000 in input file:',iSpat1,iSpat2,MFORCE%PPT; stop; endif
               if(MFORCE%PET.lt.0.0) then; PRINT *, 'Negative PET in input file'; stop; endif
               if(MFORCE%PET.gt.100.0) then; PRINT *, 'PET greater than 100 in input file'; stop; endif
