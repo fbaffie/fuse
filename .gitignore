@@ -2,6 +2,7 @@
 *.rtf
 # executables and bin directory
 bin
+site
 *.exe
 # temporary files
 *~

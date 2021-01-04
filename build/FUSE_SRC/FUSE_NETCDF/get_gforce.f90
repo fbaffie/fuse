@@ -11,6 +11,45 @@ public::get_gforce_3d
 public::get_varid
 
 contains
+  ! ---------------------------------------------------------------------------------------
+  ! Creator:
+  ! --------
+  ! Ethan Gutmann, 2020
+  ! ---------------------------------------------------------------------------------------
+  ! Purpose:
+  ! --------
+  ! Split domain to allow for MPI. Given proc and nproc, provide start and update nSpat2
+
+ subroutine split_dims(nSpat2, proc, nproc, start)
+
+     implicit none
+     integer(i4b), intent(inout) :: nSpat2, start
+     integer(i4b), intent(in) :: proc, nproc
+
+     integer(i4b) :: newn, offset, even_multiple, count
+
+     print*, 'Number of cores to be used (nproc)', nproc
+
+     newn = nSpat2 / nproc  ! number of rows of the domain to be run by each process
+     print*, 'Number of rows of domain per core (newn) ', newn
+
+     even_multiple = nproc * newn
+     print*, 'nproc x newn', even_multiple
+
+     count = nSpat2 - even_multiple
+     print*, 'Difference to',nSpat2,':', count
+
+     offset = 0
+     if (proc < count) offset = 1
+
+     start = (proc * newn) + min(proc, count) + 1
+
+     nSpat2 = newn + offset
+
+     print*, "PROCESS (proc, start, start+newn, newn)"
+     print*, proc, start, start+newn, newn
+
+ end subroutine split_dims
 
  SUBROUTINE read_ginfo(ncid,ierr,message)
  ! ---------------------------------------------------------------------------------------
@@ -21,7 +60,6 @@ contains
  ! Purpose:
  ! --------
  ! Read grid info (spatial and temporal dimensions) from the NetCDF file
-
  ! ---------------------------------------------------------------------------------------
  ! Modules Modified:
  ! -----------------
@@ -30,7 +68,7 @@ contains
  USE fuse_fileManager,only:SETNGS_PATH,FORCINGINFO,&   ! defines data directory
                            INPUT_PATH
  USE multiforce,only:forcefile,vname_aprecip           ! model forcing structures
- USE multiforce,only:nspat1,nspat2,numtim_in           ! dimension lengths
+ USE multiforce,only:nspat1,nspat2,startSpat2,numtim_in! dimension lengths
  USE multiforce,only:GRID_FLAG                         ! .true. if distributed
  USE multiforce,only:latitude,longitude                ! dimension arrays
  USE multiforce,only:time_steps,julian_day_input       ! dimension arrays
@@ -38,6 +76,10 @@ contains
  USE multiforce,only:vname_dtime                       ! variable name: time sice reference time
  USE multiforce, only: nForce, nInput                  ! number of parameter set and their names
  USE multiforce, only: NA_VALUE                        ! NA_VALUE for the forcing
+
+#ifdef __MPI__
+ use mpi
+#endif
 
  IMPLICIT NONE
  ! input
@@ -55,6 +97,27 @@ contains
  integer(i4b),dimension(ndims)          :: dimids_ppt  ! vector of dimension IDs for precipitation
  integer(i4b)                           :: iDimID      ! dimension ID
  integer(i4b)                           :: dimLen      ! dimension length
+
+
+ integer ( kind = 4 ) mpi_error_value
+ integer ( kind = 4 ) mpi_process
+ integer ( kind = 4 ) mpi_nprocesses
+
+
+ ! ---------------------------------------------------------------------------------------
+ ! Initialize MPI
+ ! ---------------------------------------------------------------------------------------
+#ifdef __MPI__
+ print *,'__MPI__ is defined, getting mpi_nprocesses and mpi_process'
+ call MPI_Comm_size(MPI_COMM_WORLD, mpi_nprocesses, mpi_error_value)
+ call MPI_Comm_rank(MPI_COMM_WORLD, mpi_process, mpi_error_value)
+#else
+ print *,'__MPI__ is NOT defined, setting mpi_nprocesses = 1 and mpi_process = 0'
+ mpi_process = 0
+ mpi_nprocesses = 1
+#endif
+
+
  ! ---------------------------------------------------------------------------------------
  ! initialize error control
  ierr=0; message='read_ginfo/'
@@ -82,6 +145,8 @@ contains
 
  end do
 
+ startSpat2 = 1
+
  ! define the spatial flag
  PRINT *, ' '
  if(nSpat1.GT.1.OR.nSpat2.GT.1) THEN
@@ -89,6 +154,7 @@ contains
    GRID_FLAG=.TRUE.
    nInput=3   ! number of variables to be retrieved from input file (P, T, PET)
 
+   call split_dims(nSpat2, mpi_process, mpi_nprocesses, startSpat2)
  ELSE
 
    PRINT *, '### FUSE set to run in catchment mode'
@@ -97,7 +163,7 @@ contains
 
  ENDIF
 
- print*, 'spatial dimensions of the grid= ', nSpat1, 'x' ,nSpat2
+ print*, 'spatial dimensions of the grid (nSpat1 x nSpat2)= ', nSpat1, 'x' ,nSpat2
  print*, 'NA_VALUE = ', NA_VALUE
 
  ! allocate arrays
@@ -112,7 +178,7 @@ contains
  ! get latitude
  ierr = nf90_inq_varid(ncid, 'latitude', iVarID)
  if(ierr/=0)then; message=trim(message)//trim(nf90_strerror(ierr))//'[variable=latitude]'; return; endif
- ierr = nf90_get_var(ncid, iVarID, latitude, start=(/1/), count=(/nSpat2/)); CALL HANDLE_ERR(IERR)
+ ierr = nf90_get_var(ncid, iVarID, latitude, start=(/startSpat2/), count=(/nSpat2/)); CALL HANDLE_ERR(IERR)
  if(ierr/=0)then; message=trim(message)//trim(nf90_strerror(ierr)); return; endif
 
  ! get time
@@ -254,7 +320,7 @@ contains
  USE multiforce,only:ilook_swdown                       ! variable indice: downward shortwave radiation
  USE multiforce,only:ilook_potevap                      ! variable indice: potential ET
 
- USE multiforce,only:nspat1,nspat2                      ! dimension lengths
+ USE multiforce,only:nspat1,nspat2,startSpat2           ! dimension lengths
  USE multiforce,only:ncid_var                           ! NetCDF ID for forcing variables
  USE multiforce,only:amult_ppt,amult_pet                ! multipliers o convert to mm/day
  USE multiforce,only:gForce                             ! gridded forcing data
@@ -305,7 +371,7 @@ contains
  do ivar=1,3
 
    ! get the data
-   ierr = nf90_get_var(ncid_forc, ncid_var(ivar), gTemp, start=(/1,1,iTim/), count=(/nSpat1,nSpat2,1/)); CALL HANDLE_ERR(IERR)
+   ierr = nf90_get_var(ncid_forc, ncid_var(ivar), gTemp, start=(/1,startSpat2,iTim/), count=(/nSpat1,nSpat2,1/)); CALL HANDLE_ERR(IERR)
    if(ierr/=0)then; message=trim(message)//trim(nf90_strerror(ierr)); return; endif
 
   ! save the data in the structure -- and convert fluxes to mm/day
@@ -320,6 +386,8 @@ contains
   !if( trim(cVec(iVar)%vname) == trim(vname_swdown)  )then; ancilF(:,:)%swdown  = gTemp(:,:,1);       lCheck(ilook_swdown)  = .true.; endif
 
  end do  ! (loop thru forcing variables)
+
+ PRINT *, 'gForce', gForce
 
  ! deallocate space for gTemp
  deallocate(gTemp, stat=ierr)
@@ -359,7 +427,7 @@ contains
  USE multiforce,only:ilook_potevap                      ! variable indice: potential ET
  USE multiforce,only:ilook_q                            ! variable indice: observed discharge
 
- USE multiforce,only:nspat1,nspat2                      ! dimension lengths
+ USE multiforce,only:nspat1,nspat2,startSpat2           ! dimension lengths
  USE multiforce,only:ncid_var                           ! NetCDF ID for forcing variables
  USE multiforce,only:amult_ppt,amult_pet                ! multipliers o convert to mm/day
  USE multiforce,only:gForce_3d                          ! gridded forcing data
@@ -411,7 +479,7 @@ contains
  do ivar=1,nInput
 
   ! get the data
-  ierr = nf90_get_var(ncid_forc, ncid_var(ivar), gTemp, start=(/1,1,itim_start/), count=(/nSpat1,nSpat2,numtim/)); CALL HANDLE_ERR(IERR)
+  ierr = nf90_get_var(ncid_forc, ncid_var(ivar), gTemp, start=(/1,startSpat2,itim_start/), count=(/nSpat1,nSpat2,numtim/)); CALL HANDLE_ERR(IERR)
   if(ierr/=0)then; message=trim(message)//trim(nf90_strerror(ierr)); return; endif
 
   ! save the data in the structure -- and convert fluxes to mm/day
@@ -441,17 +509,13 @@ contains
 
  end do  ! (loop thru forcing variables)
 
- ! make a few safety tests
- !if( ANY(gForce_3d%PPT.lt.0.0)) then; PRINT *, 'Negative precipitation in input file'; stop; endif
- !if( ANY(gForce_3d%PPT.gt.1000.0)) then; PRINT *, 'Precipitation greater than 1000mm/day in input file'; stop; endif
- !if( ANY(gForce_3d%PET.lt.0.0)) then; PRINT *, 'Negative PET in input file'; stop; endif
- !if( ANY(gForce_3d%PET.gt.1000.0)) then; PRINT *, 'PET greater than 1000mm/day in input file'; stop; endif
- !if( ANY(gForce_3d%TEMP.lt.-100.0)) then; PRINT *, 'Temperature lower than -100°C in input file'; stop; endif
- !if( ANY(gForce_3d%TEMP.gt.100.0)) then; PRINT *, 'Temperature greater than 100C in input file'; stop; endif
-
  ! deallocate space for gTemp
  deallocate(gTemp, stat=ierr)
  if(ierr/=0)then; message=trim(message)//'problem deallocating space for gTemp'; return; endif
+
+  !PRINT *, 'PET', gForce_3d(:,:,1:numtim)%pet
+  !PRINT *, 'PPT', gForce_3d(:,:,1:numtim)%ppt
+  !PRINT *, 'TEMP', gForce_3d(:,:,1:numtim)%temp
 
  end subroutine get_gforce_3d
 

@@ -18,6 +18,7 @@ MODULE GET_TIME_INDICES_MODULE
     USE multiforce, only: numtim_sub, itim_sub                ! length of subperiod time series and associated index
     USE multiforce, only: sim_beg,sim_end                     ! timestep indices
     USE multiforce, only: eval_beg,eval_end                   ! timestep indices
+    USE multiforce, only: SUB_PERIODS_FLAG                    ! .true. if subperiods are used to run FUSE
 
     USE fuse_fileManager,only:date_start_sim,date_end_sim,&
               date_start_eval,date_end_eval,&
@@ -105,12 +106,14 @@ MODULE GET_TIME_INDICES_MODULE
     if(numtim_sub.eq.-9999)then
 
       print *, 'numtim_sub = -9999, FUSE will be run in 1 chunk of ',numtim_sim, 'time steps'
+      SUB_PERIODS_FLAG=.FALSE.
 
       numtim_sub=numtim_sim ! no subperiods, run the whole time series
 
     else
 
       print *, 'FUSE will be run in chunks of ',numtim_sub, 'time steps'
+      SUB_PERIODS_FLAG=.TRUE.
 
     end if
 

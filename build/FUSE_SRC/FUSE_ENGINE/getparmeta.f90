@@ -6,14 +6,14 @@ SUBROUTINE GETPARMETA(err,message)
 ! ---------------------------------------------------------------------------------------
 ! Purpose:
 ! --------
-! Reads parameter metadata 
+! Reads parameter metadata
 ! ---------------------------------------------------------------------------------------
 ! Modules Modified:
 ! -----------------
 ! MODULE multiparam -- model parameters stored in MODULE multiparam
 ! ---------------------------------------------------------------------------------------
 USE nrtype                                            ! variable types, etc.
-USE fuse_fileManager,only:SETNGS_PATH,CONSTRAINTS     ! defines data directory                               
+USE fuse_fileManager,only:SETNGS_PATH,CONSTRAINTS     ! defines data directory
 USE multiparam, ONLY: PARATT                          ! parameter attribute structure
 USE putpar_str_module                                 ! provide access to SUBROUTINE putpar_str
 USE par_insert_module                                 ! provide access to SUBROUTINE par_insert
@@ -23,9 +23,8 @@ integer(i4b),intent(out)::err
 character(*),intent(out)::message
 ! locals
 INTEGER(I4B)                           :: IUNIT       ! file unit
-integer(i4b),parameter::lenPath=1024 !DK211008: allows longer file paths
-INTEGER(I4B)                           :: IERR        ! error code for read statement\
-CHARACTER(LEN=lenPath)                 :: CFILE       ! name of constraints file
+INTEGER(I4B)                           :: IERR        ! error code for read statement
+CHARACTER(LEN=1024)                    :: CFILE       ! name of constraints file
 LOGICAL(LGT)                           :: LEXIST      ! .TRUE. if file exists
 CHARACTER(LEN=256)                     :: KEY         ! format code
 TYPE(PARATT)                           :: PARAM_META  ! parameter metadata
@@ -35,13 +34,13 @@ INTEGER(I4B)                           :: ICH         ! looping variable (do loo
 ! read in control file
 err=0
 IUNIT = 21  ! file unit
-CFILE = TRIM(SETNGS_PATH)//TRIM(CONSTRAINTS)      ! control file info shared in MODULE ddirectory
+CFILE = TRIM(SETNGS_PATH) // TRIM(CONSTRAINTS)      ! control file info shared in MODULE ddirectory
 INQUIRE(FILE=CFILE,EXIST=LEXIST)  ! check that control file exists
 print *,'Parameter constraints file:', TRIM(CFILE)
 IF (.not.LEXIST) THEN
  message="f-GETPARMETA/parameter constraints file '"//trim(CFILE)//"' does not exist "
  err=100; return
-ENDIF 
+ENDIF
 ! initialize parameter strings
 DO ICH=1,LEN(PARAM_META%P_NAME); PARAM_META%P_NAME(ICH:ICH)=' '; END DO
 DO ICH=1,LEN(PARAM_META%CHILD1); PARAM_META%CHILD1(ICH:ICH)=' '; END DO

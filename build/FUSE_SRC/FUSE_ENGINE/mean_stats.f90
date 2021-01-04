@@ -85,15 +85,17 @@ ELSE
   QSIM_AVAIL=PACK(QSIM,QOBS_MASK,QSIM_AVAIL)  ! moves QSIM time steps indicated by QOBS_MASK to QSIM_AVAIL
   											                      ! if no values is missing (i.e. NS = NUM_AVAIL) then QSIM_AVAIL
   										                      	! should be a copy of QSIM
-
+                                              
   ! compute mean
   XB_OBS = SUM(QOBS_AVAIL(:)) / REAL(NUM_AVAIL, KIND(SP))
   XB_SIM = SUM(QSIM_AVAIL(:)) / REAL(NUM_AVAIL, KIND(SP))
+
   ! compute the sum of squares of simulated and observed vectors
   DOBS(:) = QOBS_AVAIL(:) - XB_OBS
   DSIM(:) = QSIM_AVAIL(:) - XB_SIM
   SS_OBS  = DOT_PRODUCT(DOBS,DOBS)  ! = SUM( DOBS(:)*DOBS(:) )
   SS_SIM  = DOT_PRODUCT(DSIM,DSIM)  ! = SUM( DSIM(:)*DSIM(:) )
+
   ! compute the sum of squares of lagged differences
   SS_LOBS = DOT_PRODUCT(DOBS(2:NUM_AVAIL),DOBS(1:NUM_AVAIL-1))
   SS_LSIM = DOT_PRODUCT(DSIM(2:NUM_AVAIL),DSIM(1:NUM_AVAIL-1))

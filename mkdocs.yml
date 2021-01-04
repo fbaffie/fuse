@@ -1,0 +1,19 @@
+site_name: FUSE manual
+nav:
+  - Home: index.md
+  - Installation and test cases:
+    - Installation: 'install/install_fuse.md'
+    - Test data : 'install/test_data.md'
+    - Test runs: 'install/test_runs.md'
+  - Execution modes: 'execution_modes.md'
+  - FUSE files:
+    - File manager: 'files/file_manager.md'
+    - Input files: 'files/input_files.md'
+    - Settings files: 'files/settings_files.md'
+    - Output files: 'files/output_files.md'
+  - FUSE modules:
+    - Precipitation: 'modules/1_precip.md'
+  - Tools for FUSE: 'tofu.md'
+  - CAMELS for FUSE: 'camels_for_fuse.md'
+
+theme: readthedocs

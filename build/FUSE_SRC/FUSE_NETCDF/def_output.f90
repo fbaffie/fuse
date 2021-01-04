@@ -14,6 +14,7 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
   USE model_defn                                        ! model definition (includes filename)
   USE metaoutput                                        ! metadata for all model variables
   USE fuse_fileManager,only: Q_ONLY                     ! only write streamflow to output file?
+  USE multiforce, only: GRID_FLAG                          ! .true. if distributed
   USE multiforce, only: latitude,longitude              ! dimension arrays
   USE multiforce, only: name_psets,time_steps           ! dimension arrays
   USE multiforce, only: latUnits,lonUnits               ! units string
@@ -41,7 +42,7 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
   INTEGER(I4B)                           :: lat_dim     ! 2nd spatial dimension
   INTEGER(I4B)                           :: param_dim   ! parameter set dimension
   INTEGER(I4B)                           :: NMOD_DIM    ! number of models
-  INTEGER(I4B), DIMENSION(4)             :: TVAR        ! time-varying dimensions
+  INTEGER(I4B), DIMENSION(:), ALLOCATABLE  :: TVAR        ! all dimensions
   INTEGER(I4B)                           :: IVAR        ! loop through variables
   INTEGER(I4B)                           :: IVAR_ID     ! variable ID
 
@@ -67,7 +68,10 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
   IERR = NF_DEF_DIM(ncid_out,'time',NF_UNLIMITED,NTIM_DIM); CALL HANDLE_ERR(IERR) !record dimension (unlimited length)
   IERR = NF_DEF_DIM(ncid_out,'longitude',nSpat1,lon_dim); CALL HANDLE_ERR(IERR)
   IERR = NF_DEF_DIM(ncid_out,'latitude',nSpat2,lat_dim); CALL HANDLE_ERR(IERR)
-  IERR = NF_DEF_DIM(ncid_out,'param_set',NPSET,param_dim); CALL HANDLE_ERR(IERR)
+  IF(.NOT.GRID_FLAG)THEN
+    IERR = NF_DEF_DIM(ncid_out,'param_set',NPSET,param_dim); CALL HANDLE_ERR(IERR)
+  ENDIF
+
 
   ! define character-position dimension for strings of max length 40
   !IERR = NF_DEF_DIM(ncid_out, "chid", 40, CHID); CALL HANDLE_ERR(IERR)
@@ -84,7 +88,14 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
   ! assign dimensions to indices: for efficiency reasons, param_dim should be
   ! last, because it varies the slowest, but the NetCDF standard imposes
   ! the unlimited dimension to be last.
-  TVAR = (/lon_dim,lat_dim,param_dim,NTIM_DIM/)
+
+  IF(.NOT.GRID_FLAG)THEN
+    allocate(TVAR(4))
+    TVAR = (/lon_dim,lat_dim,param_dim,NTIM_DIM/)
+  ELSE
+    allocate(TVAR(3))
+    TVAR = (/lon_dim,lat_dim,NTIM_DIM/) ! no parameter dimension in grid mode
+  ENDIF
 
   ! define time-varying output variables
   DO IVAR=1,NOUTVAR
@@ -98,8 +109,8 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
         IF (TRIM(VNAME(IVAR)).EQ.'obsq')     WRITE_VAR=.TRUE.
       END IF
 
-      !IF (TRIM(VNAME(IVAR)).EQ.'ppt')      WRITE_VAR=.TRUE.
-      !IF (TRIM(VNAME(IVAR)).EQ.'pet')      WRITE_VAR=.TRUE.
+      IF (TRIM(VNAME(IVAR)).EQ.'ppt')      WRITE_VAR=.TRUE.
+      IF (TRIM(VNAME(IVAR)).EQ.'pet')      WRITE_VAR=.TRUE.
       IF (TRIM(VNAME(IVAR)).EQ.'evap_1')   WRITE_VAR=.TRUE.
       IF (TRIM(VNAME(IVAR)).EQ.'evap_2')   WRITE_VAR=.TRUE.
       IF (TRIM(VNAME(IVAR)).EQ.'q_instnt') WRITE_VAR=.TRUE.
@@ -116,7 +127,12 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
     ENDIF
 
     ! write the variable
-    IERR = NF_DEF_VAR(ncid_out,TRIM(VNAME(IVAR)),NF_REAL,4,TVAR,IVAR_ID); CALL HANDLE_ERR(IERR)
+    IF(.NOT.GRID_FLAG)THEN
+      IERR = NF_DEF_VAR(ncid_out,TRIM(VNAME(IVAR)),NF_REAL,4,TVAR,IVAR_ID); CALL HANDLE_ERR(IERR)
+    ELSE
+      IERR = NF_DEF_VAR(ncid_out,TRIM(VNAME(IVAR)),NF_REAL,3,TVAR,IVAR_ID); CALL HANDLE_ERR(IERR)
+    ENDIF
+
 
     IERR = NF_PUT_ATT_TEXT(ncid_out,IVAR_ID,'long_name',LEN_TRIM(LNAME(IVAR)),TRIM(LNAME(IVAR)))
     CALL HANDLE_ERR(IERR)
@@ -144,9 +160,11 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
   ierr = nf_put_att_text(ncid_out,ivar_id,'units',8,'degreesE'); call handle_err(ierr)
   ierr = nf_put_att_text(ncid_out,ivar_id,'axis',1,'X'); call handle_err(ierr)
 
-  ! define the param_set variable
-  ierr = nf_def_var(ncid_out,'param_set',nf_char,1,param_dim,ivar_id); call handle_err(ierr)
-  ierr = nf_put_att_text(ncid_out,ivar_id,'units',1,'-'); call handle_err(ierr)
+  IF(.NOT.GRID_FLAG)THEN
+    ! define the param_set variable
+    ierr = nf_def_var(ncid_out,'param_set',nf_char,1,param_dim,ivar_id); call handle_err(ierr)
+    ierr = nf_put_att_text(ncid_out,ivar_id,'units',1,'-'); call handle_err(ierr)
+  ENDIF
 
   ! end definitions
   IERR = NF_ENDDEF(ncid_out); call handle_err(ierr)
@@ -169,10 +187,16 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
   !IERR = NF_PUT_VARA_TEXT(ncid_out,IVAR_ID,1,NPSET,name_psets); CALL HANDLE_ERR(IERR) ! write data
   !IERR = NF_PUT_VARA_TEXT(ncid_out,IVAR_ID,TSTART,TCOUNT,name_psets); CALL HANDLE_ERR(IERR) ! write data
 
-  PRINT *, 'NetCDF file for model runs defined with dimensions', nSpat1 , nSpat2, NPSET, NTIM
+  IF(.NOT.GRID_FLAG)THEN
+    PRINT *, 'NetCDF file for model runs defined with dimensions', nSpat1 , nSpat2, NPSET, NTIM
+  ELSE
+    PRINT *, 'NetCDF file for model runs defined with dimensions', nSpat1 , nSpat2, NTIM
+  ENDIF
 
   IERR = NF_ENDDEF(ncid_out)
   IERR = NF_CLOSE(ncid_out)
+
+  deallocate(TVAR)
 
 ! ---------------------------------------------------------------------------------------
 END SUBROUTINE DEF_OUTPUT
