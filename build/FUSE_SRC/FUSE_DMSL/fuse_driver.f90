@@ -424,7 +424,7 @@ DO IPAR=1,NUMPAR
   APAR(IPAR) = PARAM_META%PARDEF  ! initialise APAR using default parameter values
 END DO
 
-! Prepare parameter sets for the desire mode and run FUSE - TODO: create subroutine 
+! Prepare parameter sets for the desire mode and run FUSE - TODO: create subroutine
 
 IF(fuse_mode == 'run_def')THEN ! run FUSE with default parameter values
 
