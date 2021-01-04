@@ -408,7 +408,21 @@ ENDIF
 
 CALL DEF_PARAMS(NUMPSET)               ! Define NetCDF output files - parameter variables
 CALL DEF_SSTATS()                      ! Define NetCDF output files - summary statistics
-CALL DEF_OUTPUT(nSpat1,nSpat2,NUMPSET,numtim_sim)   ! Define NetCDF output files - time-varying model output
+
+! define if time series should be savedto output file
+IF(fuse_mode == 'calib_sce')THEN
+
+  ! when calibrating FUSE with SCE, the runs are not saved to save memory
+  ! and no output file for the runs is created
+  OUTPUT_FLAG=.FALSE.
+  PRINT *, 'Create NetCDF output file for runs: none, in mode calib_sce only the parameter values are saved, not the runs, no *_runs_sce.nc will be created'
+
+ELSE
+
+  OUTPUT_FLAG=.TRUE.
+  CALL DEF_OUTPUT(nSpat1,nSpat2,NUMPSET,numtim_sim)   ! define NetCDF output files - time-varying model output
+
+END IF
 
 ! ---------------------------------------------------------------------------------------
 ! RUN FUSE IN DESIRED MODE
@@ -428,8 +442,6 @@ END DO
 
 IF(fuse_mode == 'run_def')THEN ! run FUSE with default parameter values
 
-  OUTPUT_FLAG=.TRUE.
-
   ! transfer parameter set APAR to MPARAM and then MPARAM_2D
   CALL PUT_PARSET(APAR)                ! put parameter set into MPARAM
 
@@ -446,9 +458,6 @@ IF(fuse_mode == 'run_def')THEN ! run FUSE with default parameter values
   print *, 'Done running FUSE with default parameter values'
 
 ELSE IF(fuse_mode == 'calib_sce')THEN ! calibrate FUSE using SCE
-
-  ! Calibrate FUSE with SCE
-  OUTPUT_FLAG=.FALSE.
 
   ! ASCII output file for SCE
   FNAME_ASCII = TRIM(OUTPUT_PATH)//TRIM(dom_id)//'_'//TRIM(FMODEL_ID)//'_sce_output.txt'
@@ -476,14 +485,7 @@ ELSE IF(fuse_mode == 'calib_sce')THEN ! calibrate FUSE using SCE
 
   PRINT *, 'Done running SCE!'
 
-  ! call the function again with the optimized parameter set (to ensure the last parameter set is the optimum)
-  ! AF_MSP = FUNCTN(NOPT,AF_MSP) - TODO renable this.
-
-  !PRINT *, 'Done calling the function again with the optimized parameter set!'
-
 ELSE IF(fuse_mode == 'run_best')THEN ! run FUSE with best (lowest RMSE) parameter set from a previous SCE calibration
-
-  OUTPUT_FLAG=.TRUE.
 
   ! load best SCE parameter set from NetCDF file into APAR
   CALL GET_SCE_PARAM(FNAME_NETCDF_PARA_SCE,ONEMOD,NUMPAR,APAR)
@@ -493,8 +495,6 @@ ELSE IF(fuse_mode == 'run_best')THEN ! run FUSE with best (lowest RMSE) paramete
   print *, 'Done running FUSE with best SCE parameter set'
 
 ELSE IF(fuse_mode == 'run_pre_catch')THEN ! run FUSE with pre-defined parameter values
-
-  OUTPUT_FLAG=.TRUE.
 
   do IPSET = 1, NUMPSET
 
@@ -515,8 +515,6 @@ ELSE IF(fuse_mode == 'run_pre_catch')THEN ! run FUSE with pre-defined parameter 
   DEALLOCATE(name_psets)
 
 ELSE IF(fuse_mode == 'run_pre_dist')THEN ! run FUSE with pre-defined parameter values
-
-  OUTPUT_FLAG=.TRUE.
 
   FNAME_NETCDF_PARA_PRE=TRIM(OUTPUT_PATH)//TRIM(file_para_dist)
 

@@ -57,7 +57,7 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
   CALL VARDESCRIBE()  ! get list of variable descriptions
   ! ---------------------------------------------------------------------------------------
 ! put file in define mode
-  print *, 'Create NetCDF file for runs:', TRIM(FNAME_NETCDF_RUNS)
+  print *, 'Create NetCDF output file for runs:', TRIM(FNAME_NETCDF_RUNS)
 
   IERR = NF_CREATE(TRIM(FNAME_NETCDF_RUNS),NF_CLOBBER,ncid_out); CALL HANDLE_ERR(IERR)
 
@@ -177,11 +177,6 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
   longitude_msp=longitude ! convert to actual single precision
   IERR = NF_INQ_VARID(ncid_out,'longitude',IVAR_ID); CALL HANDLE_ERR(IERR) ! get variable ID
   IERR = NF_PUT_VARA_REAL(ncid_out,IVAR_ID,1,nspat1,longitude_msp); CALL HANDLE_ERR(IERR) ! write data
-
-  !TSTART(1) = 1      ! start at beginning of variable
-  !TSTART(2) = 1      ! record number to write
-  !TCOUNT(1) = 20     ! number of chars to write
-  !TCOUNT(2) = 1      ! only write one record
 
   !IERR = NF_INQ_VARID(ncid_out,'param_set',IVAR_ID); CALL HANDLE_ERR(IERR) ! get variable ID
   !IERR = NF_PUT_VARA_TEXT(ncid_out,IVAR_ID,1,NPSET,name_psets); CALL HANDLE_ERR(IERR) ! write data
