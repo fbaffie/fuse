@@ -54,7 +54,7 @@ print *, 'Opening parameter file:', TRIM(NETCDF_FILE)
 IERR = NF_OPEN(TRIM(NETCDF_FILE),NF_NOWRITE,NCID); CALL HANDLE_ERR(IERR)
 
 ! get number of parameter sets
-IERR = NF_INQ_DIMID(NCID,'par',IDIMID); CALL HANDLE_ERR(IERR)
+IERR = NF_INQ_DIMID(NCID,'param_set',IDIMID); CALL HANDLE_ERR(IERR)
 IERR = NF_INQ_DIMLEN(NCID,IDIMID,NPAR); CALL HANDLE_ERR(IERR)
 
 print *, 'NPAR - total number of parameter sets in parameter file:', NPAR
@@ -232,7 +232,7 @@ ENDIF
 IERR = NF_OPEN(TRIM(NETCDF_FILE),NF_NOWRITE,NCID); CALL HANDLE_ERR(IERR)
 
  ! get number of parameter sets
- IERR = NF_INQ_DIMID(NCID,'par',IDIMID); CALL HANDLE_ERR(IERR)
+ IERR = NF_INQ_DIMID(NCID,'param_set',IDIMID); CALL HANDLE_ERR(IERR)
  IERR = NF_INQ_DIMLEN(NCID,IDIMID,NPAR); CALL HANDLE_ERR(IERR)
 
  ! extract RMSE for each parameter set
