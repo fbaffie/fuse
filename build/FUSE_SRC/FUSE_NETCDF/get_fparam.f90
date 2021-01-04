@@ -157,7 +157,7 @@ ENDIF
 
         CALL HANDLE_ERR(IERR)
 
-        ! get parameter value and save it in XPAR
+        ! get parameter value and save it in XPAR (converting double to single precision)
         INDX = (/iSpat1,iSpat2/)
         IERR = NF_GET_VAR1_DOUBLE(NCID,IVARID,INDX,APAR); CALL HANDLE_ERR(IERR)
         XPAR(IPAR) = APAR
@@ -210,9 +210,9 @@ REAL(DP), DIMENSION(:),ALLOCATABLE     :: RAW_RMSE    ! RMSE for each parameter 
 REAL(DP), DIMENSION(1)                 :: LOWEST_RAW_RMSE    ! LOWEST RAW RMSE
 INTEGER(I4B)                           :: IPAR        ! loop through model parameters
 INTEGER(I4B)                           :: NPAR        ! number of parameter sets in output file
-REAL(DP)                               :: APAR        ! parameter value (single precision)
+REAL(DP)                               :: APAR        ! parameter value (double precision)
 ! output
-REAL(SP), DIMENSION(MPAR), INTENT(OUT) :: XPAR        ! parameter value (whatever precision SP is)
+REAL(SP), DIMENSION(MPAR), INTENT(OUT) :: XPAR        ! parameter value (single precision)
 include 'netcdf.inc'                                  ! use netCDF libraries
 ! ---------------------------------------------------------------------------------------
 ! check that the file exists
@@ -250,7 +250,7 @@ IERR = NF_OPEN(TRIM(NETCDF_FILE),NF_NOWRITE,NCID); CALL HANDLE_ERR(IERR)
 
  DEALLOCATE(RAW_RMSE,STAT=IERR); IF (IERR.NE.0) STOP ' problem deallocating ATIME/TDATA '
 
- PRINT *, 'Reading from NetCDF file parameter values for best parameter set:'
+ PRINT *, 'Importing parameter values for best parameter set:'
 
  ! loop through parameters
  DO IPAR=1,NUMPAR
@@ -262,10 +262,10 @@ IERR = NF_OPEN(TRIM(NETCDF_FILE),NF_NOWRITE,NCID); CALL HANDLE_ERR(IERR)
   INDX = (/I_OPT_PARA/)
   IERR = NF_GET_VAR1_DOUBLE(NCID,IVARID,INDX,APAR); CALL HANDLE_ERR(IERR)
 
-  ! put parameter value in the output vector
+  ! put parameter value in the output vector (and convert double to single precision)
   XPAR(IPAR) = APAR
 
-  print *, 'PARAM VALUES:',LPARAM(IPAR)%PARNAME, '->', APAR
+  print *, LPARAM(IPAR)%PARNAME, '<-', XPAR(IPAR)
 
  END DO
 

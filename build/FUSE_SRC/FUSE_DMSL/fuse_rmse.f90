@@ -2,45 +2,6 @@ MODULE FUSE_RMSE_MODULE
   IMPLICIT NONE
   CONTAINS
 
-  SUBROUTINE FUSE_RMSE(XPAR,GRID_FLAG,NCID_FORC,RMSE,OUTPUT_FLAG,IPSET,MPARAM_FLAG)
-
-    ! ---------------------------------------------------------------------------------------
-    ! Creator:
-    ! --------
-    ! Nans Addor, 2019
-    ! ---------------------------------------------------------------------------------------
-    ! Purpose:
-    ! --------
-    ! Wrapper to compute the RMSE for single FUSE model and a single parameter set
-    ! ---------------------------------------------------------------------------------------
-
-    USE nrtype                                               ! variable types, etc.
-    USE multistats, ONLY:MSTATS                              ! access model statistics
-    USE multiparam, ONLY:MPARAM, MPARAM_2D                   ! parameter structure
-    USE par_insert_module                                    ! inserts model parameters
-
-    IMPLICIT NONE
-
-    ! input
-    REAL(SP),DIMENSION(:),INTENT(IN)       :: XPAR           ! model parameter set
-    LOGICAL(LGT), INTENT(IN)               :: GRID_FLAG      ! .TRUE. if running FUSE on a grid
-    INTEGER(I4B), INTENT(IN)               :: NCID_FORC      ! NetCDF ID for the forcing file
-    LOGICAL(LGT), INTENT(IN)               :: OUTPUT_FLAG    ! .TRUE. if desire time series output
-    INTEGER(I4B), INTENT(IN)               :: IPSET          ! index parameter set
-    LOGICAL(LGT), INTENT(IN), OPTIONAL     :: MPARAM_FLAG    ! .FALSE. (used to turn off writing statistics)
-
-    ! output
-    REAL(SP),INTENT(OUT)                   :: RMSE           ! root mean squared error
-
-    CALL PUT_PARSET(XPAR)                                    ! populate MPARAM
-    MPARAM_2D(1,1)=MPARAM                                    ! copy parameter set to MPARAM_2D
-
-    CALL RUN_FUSE(MPARAM_2D,GRID_FLAG,NCID_FORC,OUTPUT_FLAG,IPSET,MPARAM_FLAG)
-    CALL MEAN_STATS()         ! calculate performance metrics and populate MSTATS
-    RMSE = MSTATS%RAW_RMSE
-
-  END SUBROUTINE FUSE_RMSE
-
   SUBROUTINE RUN_FUSE(PAR_STR,GRID_FLAG,NCID_FORC,OUTPUT_FLAG,IPSET,MPARAM_FLAG)
 
     ! ---------------------------------------------------------------------------------------
@@ -82,6 +43,7 @@ MODULE FUSE_RMSE_MODULE
     USE multi_flux                                           ! model fluxes
     USE multibands                                           ! elevation bands for snow modeling
     USE set_all_module
+    USE fuse_fileManager,only: fuse_mode                     ! fuse_mode
 
     ! code modules
     USE time_io, ONLY:get_modtim                             ! get model time for a given time step
@@ -145,60 +107,48 @@ MODULE FUSE_RMSE_MODULE
        IF (MPARAM_FLAG) PCOUNT = PCOUNT + 1
     ENDIF
 
-    ! initialize model states
+    ! initialize model states and compture derived model parameters
     DO iSpat2=1,nSpat2
       DO iSpat1=1,nSpat1
 
-        ! only initialize model states within domain defined by elev_mask
+        ! only set up FUSE within domain defined by elev_mask
         IF(.NOT.elev_mask(iSpat1,iSpat2))THEN
 
-          IF(fuse_mode == 'run_pre_dist')THEN ! run FUSE with distributed parameter values
+          ! add parameter set to the data structure, i.e., populate MPARAM
+          MPARAM=PAR_STR(iSpat1,iSpat2)
 
-            ! add parameter set to the data structure, i.e., populate MPARAM
-            MPARAM=PAR_STR(iSpat1,iSpat2)
-
-            ! check parameter values are within interval bounds
-            ! SCE can produce parameter values slightly outside of parameter interval
-            ! for reasons that are unclear, allowing for exceedence by 1e-6th
-            DO IPAR=1,NUMPAR       ! loop through parameters
-
-              PAR_VAL=PAREXTRACT(LPARAM(IPAR)%PARNAME) ! retrieve parameter value
-
-              !IF(PAR_VAL.LT.BL(IPAR)) THEN
-              IF((BL(IPAR)-PAR_VAL)/ABS(PAR_VAL).GT.1e-6) THEN
-                PRINT *, 'Error: value for parameter ',TRIM(LPARAM(IPAR)%PARNAME),' (',PAR_VAL,') is smaller than lower bound(',BL(IPAR),')'
-                STOP
-              ENDIF
-
-              !IF(PAR_VAL.GT.BU(IPAR)) THEN
-              IF((PAR_VAL-BU(IPAR))/ABS(PAR_VAL).GT.1e-6) THEN
-                PRINT *, 'Error: value for parameter ',TRIM(LPARAM(IPAR)%PARNAME),' (',PAR_VAL,') is greater than upper bound(',BU(IPAR),')'
-                STOP
-              ENDIF
-            END DO
-          ELSE ! all the other parameter modes
-
-            ! add parameter set to the data structure
-            CALL PUT_PARSET(XPAR)
-            PRINT *, 'Parameter set added to data structure:'
-            PRINT *, XPAR
-          END IF
-
-          ! compute derived model parameters (bucket sizes, etc.) i.e. populate
+          ! compute derived model parameters (bucket sizes, etc.), i.e. populate
           ! DPARAM based on MPARAM
           CALL PAR_DERIVE(ERR,MESSAGE)
           IF (ERR.NE.0) WRITE(*,*) TRIM(MESSAGE); IF (ERR.GT.0) STOP
 
-          ! saved DPARAM for future reference - TODO add to output file
+          ! populate DPARAM_2D - TODO add to output file
           DPARAM_2D(iSpat1,iSpat2)=DPARAM
 
-          ! initialize model states over the 2D gridded domain (1x1 domain in catchment mode)
-          DO iSpat2=1,nSpat2
-            DO iSpat1=1,nSpat1
-                CALL INIT_STATE(fracState0)             ! define FSTATE using fracState0
-                gState_3d(iSpat1,iSpat2,1) = FSTATE     ! put the state into first time step of 3D structure
-             END DO
+          ! add parameter set to the data structure - MPARAM and DPARAM now defined abovea
+          ! CALL PUT_PARSET(XPAR)
+          ! PRINT *, 'Parameter set added to data structure:'
+          ! PRINT *, XPAR
+
+          ! check parameter values are within interval bounds allowing for exceedence by 1e-6
+          DO IPAR=1,NUMPAR       ! loop through parameters
+
+            PAR_VAL=PAREXTRACT(LPARAM(IPAR)%PARNAME) ! retrieve parameter value
+
+            IF((BL(IPAR)-PAR_VAL)/ABS(PAR_VAL).GT.1e-6) THEN
+              PRINT *, 'Error: value for parameter ',TRIM(LPARAM(IPAR)%PARNAME),' (',PAR_VAL,') is smaller than lower bound(',BL(IPAR),')'
+              STOP
+            ENDIF
+
+            IF((PAR_VAL-BU(IPAR))/ABS(PAR_VAL).GT.1e-6) THEN
+              PRINT *, 'Error: value for parameter ',TRIM(LPARAM(IPAR)%PARNAME),' (',PAR_VAL,') is greater than upper bound(',BU(IPAR),')'
+              STOP
+            ENDIF
           END DO
+
+          ! initialize model states
+          CALL INIT_STATE(fracState0)             ! define FSTATE using fracState0
+          gState_3d(iSpat1,iSpat2,1) = FSTATE     ! put the state into first time step of 3D structure
 
           ! initialize elevations bands if snow module is on
           IF (SMODL%iSNOWM.EQ.iopt_temp_index) THEN
@@ -230,7 +180,7 @@ MODULE FUSE_RMSE_MODULE
     CALL INIT_STATS()
     CALL CPU_TIME(T1)
 
-    ! This version of FUSE enables the user to load slices of the forcing
+    ! FUSE2 enables the user to load slices of the forcing
     ! - FUSE1 used to access the input file at each time step, slowing operations
     ! down over large domains on systems with slow I/O. The number of timesteps
     ! of the slices is defined by the user in the filemanager. The default is
@@ -246,7 +196,7 @@ MODULE FUSE_RMSE_MODULE
     itim_sub = 1
     itim_sim = 1
 
-    !!! RUN FUSE
+    ! RUN FUSE
     DO ITIM_IN=sim_beg,sim_end
 
       ! if start of subperiod: load forcing
@@ -299,10 +249,14 @@ MODULE FUSE_RMSE_MODULE
             if(MFORCE%TEMP.lt.-100.0) then; PRINT *, 'Temperature lower than -100 in input file'; stop; endif
             if(MFORCE%TEMP.gt.100.0) then; PRINT *, 'Temperature greater than 100 in input file'; stop; endif
 
-             ! extract model states for this grid cell and time step
-             FSTATE = gState_3d(iSpat1,iSpat2,itim_sub)
-             MSTATE = FSTATE                     ! refresh model states
-             CALL STR_2_XTRY(FSTATE,STATE0)      ! set state at the start of the time step (STATE0) using FSTATE
+            ! get parameter values
+            MPARAM=MPARAM_2D(iSpat1,iSpat2)
+            DPARAM=DPARAM_2D(iSpat1,iSpat2)
+
+            ! extract model states for this grid cell and time step
+            FSTATE = gState_3d(iSpat1,iSpat2,itim_sub)
+            MSTATE = FSTATE                     ! refresh model states
+            CALL STR_2_XTRY(FSTATE,STATE0)      ! set state at the start of the time step (STATE0) using FSTATE
 
             ! initialize model fluxes
             CALL INITFLUXES()                   ! set weighted sum of fluxes to zero
@@ -368,11 +322,11 @@ MODULE FUSE_RMSE_MODULE
 
             END IF
 
-              ! save forcing data to export to output file
-              IF(GRID_FLAG)THEN
-                 aForce(itim_sub)%ppt = SUM(gForce_3d(:,:,itim_sub)%ppt)/REAL(SIZE(gForce_3d(:,:,itim_sub)), KIND(sp))
-                 aForce(itim_sub)%pet = SUM(gForce_3d(:,:,itim_sub)%pet)/REAL(SIZE(gForce_3d(:,:,itim_sub)), KIND(sp))
-              ENDIF
+            ! save forcing data to export to output file
+            IF(GRID_FLAG)THEN
+               aForce(itim_sub)%ppt = SUM(gForce_3d(:,:,itim_sub)%ppt)/REAL(SIZE(gForce_3d(:,:,itim_sub)), KIND(sp))
+               aForce(itim_sub)%pet = SUM(gForce_3d(:,:,itim_sub)%pet)/REAL(SIZE(gForce_3d(:,:,itim_sub)), KIND(sp))
+            ENDIF
 
             ! compute summary statistics
             CALL COMP_STATS()
@@ -461,4 +415,43 @@ MODULE FUSE_RMSE_MODULE
     DEALLOCATE(STATE0,STATE1,STAT=IERR); IF (IERR.NE.0) STOP ' problem deallocating state vectors in run_fuse'
 
   END SUBROUTINE RUN_FUSE
+
+  SUBROUTINE FUSE_RMSE(XPAR,GRID_FLAG,NCID_FORC,RMSE,OUTPUT_FLAG,IPSET,MPARAM_FLAG)
+
+    ! ---------------------------------------------------------------------------------------
+    ! Creator:
+    ! --------
+    ! Nans Addor, 2019
+    ! ---------------------------------------------------------------------------------------
+    ! Purpose:
+    ! --------
+    ! Wrapper to compute the RMSE for single FUSE model and a single parameter set
+    ! ---------------------------------------------------------------------------------------
+
+    USE nrtype                                               ! variable types, etc.
+    USE multistats, ONLY:MSTATS                              ! access model statistics
+    USE multiparam, ONLY:MPARAM, MPARAM_2D                   ! parameter structure
+    USE par_insert_module                                    ! inserts model parameters
+
+    IMPLICIT NONE
+
+    ! input
+    REAL(SP),DIMENSION(:),INTENT(IN)       :: XPAR           ! model parameter set
+    LOGICAL(LGT), INTENT(IN)               :: GRID_FLAG      ! .TRUE. if running FUSE on a grid
+    INTEGER(I4B), INTENT(IN)               :: NCID_FORC      ! NetCDF ID for the forcing file
+    LOGICAL(LGT), INTENT(IN)               :: OUTPUT_FLAG    ! .TRUE. if desire time series output
+    INTEGER(I4B), INTENT(IN)               :: IPSET          ! index parameter set
+    LOGICAL(LGT), INTENT(IN), OPTIONAL     :: MPARAM_FLAG    ! .FALSE. (used to turn off writing statistics)
+
+    ! output
+    REAL(SP),INTENT(OUT)                   :: RMSE           ! root mean squared error
+
+    CALL PUT_PARSET(XPAR)                                    ! populate MPARAM
+    MPARAM_2D(1,1)=MPARAM                                    ! copy parameter set to MPARAM_2D
+
+    CALL RUN_FUSE(MPARAM_2D,GRID_FLAG,NCID_FORC,OUTPUT_FLAG,IPSET,MPARAM_FLAG)
+    RMSE = MSTATS%RAW_RMSE
+
+  END SUBROUTINE FUSE_RMSE
+
 END MODULE FUSE_RMSE_MODULE

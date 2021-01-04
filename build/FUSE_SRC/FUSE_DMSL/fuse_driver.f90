@@ -16,7 +16,8 @@ USE fuse_fileManager,only:fuse_SetDirsUndPhiles,&         ! sets directories and
           FMODEL_ID,&
           suffix_forcing,suffix_elev_bands,&
           numtim_sub_str,&
-          KSTOP_str, MAXN_str, PCENTO_str
+          KSTOP_str, MAXN_str, PCENTO_str,&
+          fuse_mode
 
 ! data modules
 USE model_defn,nstateFUSE=>nstate                         ! model definition structures
@@ -79,11 +80,10 @@ use mpi
 IMPLICIT NONE
 
 ! ---------------------------------------------------------------------------------------
-! GET COMMAND-LINE ARGUMENTS
+! COMMAND-LINE ARGUMENTS
 ! ---------------------------------------------------------------------------------------
 CHARACTER(LEN=256)                     :: DatString          ! string defining forcing data
 CHARACTER(LEN=256)                     :: dom_id             ! ID of the domain
-CHARACTER(LEN=24)                      :: fuse_mode          ! fuse execution mode (run_def, run_best, run_pre, calib_sce)
 CHARACTER(LEN=64)                      :: file_para_list     ! txt file containing list of parameter sets
 CHARACTER(LEN=64)                      :: file_para_dist     ! NetCDF file containing distributed parameter values
 
@@ -424,7 +424,7 @@ DO IPAR=1,NUMPAR
   APAR(IPAR) = PARAM_META%PARDEF  ! initialise APAR using default parameter values
 END DO
 
-! TODO: create routine for the loops below
+! Prepare parameter sets for the desire mode and run FUSE - TODO: create subroutine 
 
 IF(fuse_mode == 'run_def')THEN ! run FUSE with default parameter values
 

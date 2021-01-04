@@ -39,6 +39,8 @@ CHARACTER(len=20)           :: numtim_sub_str    ! number of time steps of subpe
 CHARACTER(len=20)           :: KSTOP_str   ! number of shuffling loops the value must change by PCENTO
 CHARACTER(len=20)           :: MAXN_str    ! maximum number of trials before optimization is terminated
 CHARACTER(len=20)           :: PCENTO_str  ! the percentage
+! FUSE model
+CHARACTER(LEN=24)           :: fuse_mode          ! fuse execution mode (run_def, run_best, calib_sce, run_pre_catch, run_pre_dist)
 
 !----------------------------------------------------
 contains
