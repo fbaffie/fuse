@@ -102,7 +102,7 @@ SUBROUTINE GET_DIST_PARAM(NETCDF_FILE,MPAR,PARAM_2D)
 USE nrtype                                            ! variable types, etc.
 USE fuse_fileManager, only : OUTPUT_PATH              ! define output path
 USE multiparam
-USE multiforce, only:nspat1,nspat2                    ! dimension lengths
+USE multiforce, only:nspat1,nspat2,startSpat2         ! dimension lengths
 USE par_insert_module                                 ! insert parameters into data structures
 
 IMPLICIT NONE

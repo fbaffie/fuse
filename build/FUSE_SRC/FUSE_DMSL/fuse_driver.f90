@@ -397,8 +397,14 @@ ELSE IF(fuse_mode == 'run_pre_dist')THEN  ! run FUSE on a grid with pre-defined 
   NUMPSET=1  ! currently only 1 parameter set per grid cell
 
   ! files to which model run and parameter set will be saved
+#ifdef __MPI__
+  write(FNAME_NETCDF_RUNS, "(A,I0.5,A)") TRIM(OUTPUT_PATH)//TRIM(dom_id)//'_'//TRIM(FMODEL_ID)//'_runs_pre_dist_', mpi_process, ".nc"
+  write(FNAME_NETCDF_PARA, "(A,I0.5,A)") TRIM(OUTPUT_PATH)//TRIM(dom_id)//'_'//TRIM(FMODEL_ID)//'_para_pre_dist_', mpi_process, ".nc"
+#else
+  ! files to which model run and parameter set will be saved
   FNAME_NETCDF_RUNS = TRIM(OUTPUT_PATH)//TRIM(dom_id)//'_'//TRIM(FMODEL_ID)//'_runs_pre_dist.nc'
   FNAME_NETCDF_PARA = TRIM(OUTPUT_PATH)//TRIM(dom_id)//'_'//TRIM(FMODEL_ID)//'_para_pre_out.nc'
+#endif
 
 ELSE
 
@@ -518,7 +524,7 @@ ELSE IF(fuse_mode == 'run_pre_dist')THEN ! run FUSE with pre-defined parameter v
 
   FNAME_NETCDF_PARA_PRE=TRIM(OUTPUT_PATH)//TRIM(file_para_dist)
 
-  ! load distributed parameter
+  ! load distributed parameters
   CALL GET_DIST_PARAM(FNAME_NETCDF_PARA_PRE,NUMPAR,MPARAM_2D)
 
   print *, 'Running FUSE with distributed parameter values'

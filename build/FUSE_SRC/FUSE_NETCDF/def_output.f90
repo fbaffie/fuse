@@ -72,7 +72,6 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
     IERR = NF_DEF_DIM(ncid_out,'param_set',NPSET,param_dim); CALL HANDLE_ERR(IERR)
   ENDIF
 
-
   ! define character-position dimension for strings of max length 40
   !IERR = NF_DEF_DIM(ncid_out, "chid", 40, CHID); CALL HANDLE_ERR(IERR)
 
