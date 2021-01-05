@@ -88,7 +88,7 @@ IERR = NF_CLOSE(NCID)
 ! ---------------------------------------------------------------------------------------
 END SUBROUTINE GET_PRE_PARAM
 
-SUBROUTINE GET_DIST_PARAM(NETCDF_FILE,MPAR,PARAM_2D)
+SUBROUTINE GET_DIST_PARAM(NETCDF_FILE,MPAR)
 
  ! ---------------------------------------------------------------------------------------
 ! Creator:
@@ -123,18 +123,16 @@ INTEGER(I4B)                           :: IVARID      ! NetCDF variable ID
 INTEGER(I4B)                           :: IPAR        ! loop through model parameters
 INTEGER(I4B)                           :: NPAR        ! number of parameter sets in output file
 REAL(DP)                               :: APAR        ! parameter value (single precision)
-
-! output
-TYPE(PARADJ), DIMENSION(nspat1,nspat2) :: PARAM_2D   ! gridded model parameter set
+REAL(SP), DIMENSION(nspat1,nspat2)     :: PTEMP       ! temporaty array for a single paramter
 
 include 'netcdf.inc'                                  ! use netCDF libraries
 ! ---------------------------------------------------------------------------------------
 ! check that the file exists
 INQUIRE(FILE=TRIM(NETCDF_FILE),EXIST=LEXIST)
 IF (.NOT.LEXIST) THEN
- print *, 'The NetCDF file containing the distributed parameter values does not exist:'
- print *, TRIM(NETCDF_FILE)
- STOP
+  print *, 'The NetCDF file containing the distributed parameter values does not exist:'
+  print *, TRIM(NETCDF_FILE)
+  STOP
 ENDIF
 
  print *, 'Loading distributed parameters from: ', TRIM(NETCDF_FILE)
@@ -143,34 +141,24 @@ ENDIF
  IERR = NF_OPEN(TRIM(NETCDF_FILE),NF_NOWRITE,NCID); CALL HANDLE_ERR(IERR)
 
  ! retrieve set of parameter for each grid cell
- DO iSpat2=1,nSpat2
-   DO iSpat1=1,nSpat1
-      DO IPAR=1,NUMPAR       ! loop through parameters
+  DO IPAR=1,NUMPAR       ! loop through parameters
 
-        ! get parameter id
-        IERR = NF_INQ_VARID(NCID,TRIM(LPARAM(IPAR)%PARNAME),IVARID)
+    ! get parameter id
+    IERR = NF_INQ_VARID(NCID,TRIM(LPARAM(IPAR)%PARNAME),IVARID)
 
-        IF(IERR.NE.0) THEN
-          PRINT *, 'Error: parameter ',TRIM(LPARAM(IPAR)%PARNAME),' is missing'
-          STOP
-        ENDIF
+    IF(IERR.NE.0) THEN
+      PRINT *, 'Error: parameter ',TRIM(LPARAM(IPAR)%PARNAME),' is missing'
+      STOP
+    ENDIF
 
-        CALL HANDLE_ERR(IERR)
+    ! get parameter values
+    ierr = nf90_get_var(NCID, IVARID, PTEMP, start=(/1,startSpat2/), count=(/nSpat1,nSpat2/)); CALL HANDLE_ERR(IERR)
 
-        ! get parameter value and save it in XPAR (converting double to single precision)
-        INDX = (/iSpat1,iSpat2/)
-        IERR = NF_GET_VAR1_DOUBLE(NCID,IVARID,INDX,APAR); CALL HANDLE_ERR(IERR)
-        XPAR(IPAR) = APAR
+    CALL PAR_INSERT_2D(PTEMP,TRIM(LPARAM(IPAR)%PARNAME))
 
-      END DO
-
-      CALL PUT_PARSET(XPAR)               ! put parameter set into MPARAM
-      PARAM_2D(iSpat1,iSpat2) = MPARAM    ! use MPARAM to populate PARAM_2D
-
-    END DO
   END DO
 
- PRINT *, 'Distributed parameter values successfully loaded!'
+  PRINT *, 'Distributed parameter values successfully loaded!'
 
  ! close NetCDF file
 IERR = NF_CLOSE(NCID)

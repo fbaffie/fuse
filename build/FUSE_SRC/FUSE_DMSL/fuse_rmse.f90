@@ -107,6 +107,7 @@ MODULE FUSE_RMSE_MODULE
        IF (MPARAM_FLAG) PCOUNT = PCOUNT + 1
     ENDIF
 
+
     ! initialize model states and compture derived model parameters
     DO iSpat2=1,nSpat2
       DO iSpat1=1,nSpat1

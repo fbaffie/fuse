@@ -277,8 +277,9 @@ call get_varID(ncid_forc,err,message)
 if(err/=0)then; write(*,*) 'unable to get NetCDF variables ID'; stop; endif
 
 ! define model attributes (valid for all models)
+
 CALL UNIQUEMODL(NMOD)           ! get nmod unique models
-CALL GETPARMETA(ERR,MESSAGE)    ! read parameter metadata (parameter bounds etc.)
+CALL GETPARMETA(ERR,MESSAGE)    ! read parameter metadata and populate the model MPARAM with default values
 IF (ERR.NE.0) WRITE(*,*) TRIM(MESSAGE); IF (ERR.GT.0) STOP
 
 ! read the model decision file based on model ID and setup the model
@@ -330,7 +331,7 @@ ELSE IF(fuse_mode == 'calib_sce')THEN ! calibrate FUSE using SCE
   PRINT *, 'Number of shuffling loops the value must change by PCENTO (KSTOP) = ', KSTOP_STR
   PRINT *, 'PCENTO = ', PCENTO_STR
 
-  NOPT   =  NUMPAR         ! number of parameters to be optimized (NUMPAR in module multiparam)
+  NOPT   =  NUMPAR         ! number of parameters to be optimized
   NGS    =     10          ! number of complexes in the initial population
   NPG    =  2*NOPT + 1     ! number of points in each complex
   NPS    =    NOPT + 1     ! number of points in a sub-complex
@@ -444,20 +445,21 @@ DO IPAR=1,NUMPAR
   APAR(IPAR) = PARAM_META%PARDEF  ! initialise APAR using default parameter values
 END DO
 
-! Prepare parameter sets for the desire mode and run FUSE - TODO: create subroutine
+! Prepare parameter sets for the desire mode and run FUSE
+
+! Populate MPARAM_2D using default parameter values
+! transfer parameter set APAR to MPARAM and then MPARAM_2D
+CALL PUT_PARSET(APAR)                ! put parameter set into MPARAM
+
+DO iSpat2=1,nSpat2
+  DO iSpat1=1,nSpat1
+
+    MPARAM_2D(iSpat1,iSpat2) = MPARAM ! use MPARAM to populate MPARAM_2D
+
+  END DO
+END DO
 
 IF(fuse_mode == 'run_def')THEN ! run FUSE with default parameter values
-
-  ! transfer parameter set APAR to MPARAM and then MPARAM_2D
-  CALL PUT_PARSET(APAR)                ! put parameter set into MPARAM
-
-  DO iSpat2=1,nSpat2
-    DO iSpat1=1,nSpat1
-
-      MPARAM_2D(iSpat1,iSpat2) = MPARAM ! use MPARAM to populate MPARAM_2D
-
-    END DO
-  END DO
 
   print *, 'Running FUSE with default parameter values'
   CALL RUN_FUSE(MPARAM_2D,GRID_FLAG,NCID_FORC,OUTPUT_FLAG,1)
@@ -525,7 +527,10 @@ ELSE IF(fuse_mode == 'run_pre_dist')THEN ! run FUSE with pre-defined parameter v
   FNAME_NETCDF_PARA_PRE=TRIM(OUTPUT_PATH)//TRIM(file_para_dist)
 
   ! load distributed parameters
-  CALL GET_DIST_PARAM(FNAME_NETCDF_PARA_PRE,NUMPAR,MPARAM_2D)
+  !CALL GET_DIST_PARAM(FNAME_NETCDF_PARA_PRE,NUMPAR,MPARAM_2D)
+  CALL GET_DIST_PARAM(FNAME_NETCDF_PARA_PRE,NUMPAR)
+
+  !PRINT *,  'MPARAM_2D%TISHAPE', MPARAM_2D%TISHAPE
 
   print *, 'Running FUSE with distributed parameter values'
   CALL RUN_FUSE(MPARAM_2D,GRID_FLAG,NCID_FORC,OUTPUT_FLAG,1)
