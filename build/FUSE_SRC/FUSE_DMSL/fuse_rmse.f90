@@ -107,7 +107,6 @@ MODULE FUSE_RMSE_MODULE
        IF (MPARAM_FLAG) PCOUNT = PCOUNT + 1
     ENDIF
 
-
     ! initialize model states and compture derived model parameters
     DO iSpat2=1,nSpat2
       DO iSpat1=1,nSpat1
@@ -403,12 +402,13 @@ MODULE FUSE_RMSE_MODULE
       CALL MEAN_STATS()
       RMSE = MSTATS%RAW_RMSE
 
-    ENDIF
+      PRINT *, 'Writing parameter values...'
+      CALL PUT_PARAMS(PCOUNT)
 
-    PRINT *, 'Writing parameter values...'
-    CALL PUT_PARAMS(PCOUNT)
-    PRINT *, 'Writing model statistics...'
-    CALL PUT_SSTATS(PCOUNT)
+      PRINT *, 'Writing model statistics...'
+      CALL PUT_SSTATS(PCOUNT)
+
+    ENDIF
 
     ! deallocate state vectors
     DEALLOCATE(W_FLUX_3d)

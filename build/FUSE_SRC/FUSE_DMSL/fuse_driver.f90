@@ -413,8 +413,13 @@ ELSE
 
 ENDIF
 
-CALL DEF_PARAMS(NUMPSET)               ! Define NetCDF output files - parameter variables
-CALL DEF_SSTATS()                      ! Define NetCDF output files - summary statistics
+! create output parameter file if in catchment mode
+IF(.NOT.GRID_FLAG)THEN
+
+  CALL DEF_PARAMS(NUMPSET)
+  CALL DEF_SSTATS()
+
+ENDIF
 
 ! define if time series should be savedto output file
 IF(fuse_mode == 'calib_sce')THEN
@@ -527,10 +532,7 @@ ELSE IF(fuse_mode == 'run_pre_dist')THEN ! run FUSE with pre-defined parameter v
   FNAME_NETCDF_PARA_PRE=TRIM(OUTPUT_PATH)//TRIM(file_para_dist)
 
   ! load distributed parameters
-  !CALL GET_DIST_PARAM(FNAME_NETCDF_PARA_PRE,NUMPAR,MPARAM_2D)
   CALL GET_DIST_PARAM(FNAME_NETCDF_PARA_PRE,NUMPAR)
-
-  !PRINT *,  'MPARAM_2D%TISHAPE', MPARAM_2D%TISHAPE
 
   print *, 'Running FUSE with distributed parameter values'
   CALL RUN_FUSE(MPARAM_2D,GRID_FLAG,NCID_FORC,OUTPUT_FLAG,1)
