@@ -410,6 +410,7 @@ ELSE IF(fuse_mode == 'run_pre_dist')THEN  ! run FUSE on a grid with pre-defined 
 ELSE
 
   print *, 'Unexpected FUSE mode: ', fuse_mode
+  stop
 
 ENDIF
 
