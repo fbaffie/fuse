@@ -33,33 +33,35 @@ include 'netcdf.inc'                                  ! use netCDF libraries
 ! ---------------------------------------------------------------------------------------
 CALL PARDESCRIBE()               ! get list of parameter descriptions
 ! ---------------------------------------------------------------------------------------
-PRINT *, 'Define NetCDF output files - parameter variables = ', TRIM(FNAME_NETCDF_PARA)
+PRINT *, 'Create NetCDF output file for parameters:', TRIM(FNAME_NETCDF_PARA)
 ! Create file
 IERR = NF_CREATE(TRIM(FNAME_NETCDF_PARA),NF_CLOBBER,ncid_out); CALL HANDLE_ERR(IERR)
- ! define dimensions
- ! IERR = NF_DEF_DIM(ncid_out,'mod',NMOD,NMOD_DIM); CALL HANDLE_ERR(IERR)
+! define dimensions
+! IERR = NF_DEF_DIM(ncid_out,'mod',NMOD,NMOD_DIM); CALL HANDLE_ERR(IERR)
 ! IERR = NF_DEF_DIM(ncid_out,'par',NF_UNLIMITED,NPAR_DIM); CALL HANDLE_ERR(IERR)
- IERR = NF_DEF_DIM(ncid_out,'par',NPAR,NPAR_DIM); CALL HANDLE_ERR(IERR) ! TODO : max number of parameter - should not be hard-coded
- !IERR = NF_DEF_DIM(ncid_out,'model_differences',9,NDIF_DIM); CALL HANDLE_ERR(IERR) !TODO: this should not be hard-coded
- !IERR = NF_DEF_DIM(ncid_out,'model_name_length',10,NAME_DIM); CALL HANDLE_ERR(IERR)
- !IERR = NF_DEF_DIM(ncid_out,'error_message_length',LEN(MSTATS%ERR_MESSAGE),ERRM_DIM)
- ! assign dimensions to indices
- FVAR = (/NPAR_DIM/)            ! dimensions for fixed output (parameters)
- !SVAR = (/NAME_DIM,NDIF_DIM,NMOD_DIM/)   ! dimensions for model names
- !EVAR = (/ERRM_DIM,NMOD_DIM,NPAR_DIM/)   ! dimensions for error messages
- ! define fixed output variables
- DO IVAR=1,NOUTPAR
+IERR = NF_DEF_DIM(ncid_out,'param_set',NPAR,NPAR_DIM); CALL HANDLE_ERR(IERR) ! TODO : max number of parameter - should not be hard-coded
+!IERR = NF_DEF_DIM(ncid_out,'model_differences',9,NDIF_DIM); CALL HANDLE_ERR(IERR) !TODO: this should not be hard-coded
+!IERR = NF_DEF_DIM(ncid_out,'model_name_length',10,NAME_DIM); CALL HANDLE_ERR(IERR)
+!IERR = NF_DEF_DIM(ncid_out,'error_message_length',LEN(MSTATS%ERR_MESSAGE),ERRM_DIM)
+! assign dimensions to indices
+FVAR = (/NPAR_DIM/)            ! dimensions for fixed output (parameters)
+!SVAR = (/NAME_DIM,NDIF_DIM,NMOD_DIM/)   ! dimensions for model names
+!EVAR = (/ERRM_DIM,NMOD_DIM,NPAR_DIM/)   ! dimensions for error messages
+
+! define fixed output variables
+DO IVAR=1,NOUTPAR
   IERR = NF_DEF_VAR(ncid_out,TRIM(PNAME(IVAR)),NF_REAL,1,FVAR,IVAR_ID); CALL HANDLE_ERR(IERR)
   IERR = NF_PUT_ATT_TEXT(ncid_out,IVAR_ID,'long_name',LEN_TRIM(PDESC(IVAR)),TRIM(PDESC(IVAR)))
   CALL HANDLE_ERR(IERR)
   IERR = NF_PUT_ATT_TEXT(ncid_out,IVAR_ID,'units',LEN_TRIM(PUNIT(IVAR)),TRIM(PUNIT(IVAR)))
   CALL HANDLE_ERR(IERR)
   IERR = NF_PUT_ATT_REAL(ncid_out,IVAR_ID,'_FillValue',NF_REAL,1,-9999.); CALL HANDLE_ERR(IERR)
- END DO  ! ivar
-  ! define model definitions
- !IERR = NF_DEF_VAR(ncid_out,'model_description',NF_CHAR,3,SVAR,IVAR_ID); CALL HANDLE_ERR(IERR)
-  ! define error messages
- !IERR = NF_DEF_VAR(ncid_out,'error_message',NF_CHAR,3,EVAR,IVAR_ID); CALL HANDLE_ERR(IERR)
+END DO  ! ivar
+
+! define model definitions
+! IERR = NF_DEF_VAR(ncid_out,'model_description',NF_CHAR,3,SVAR,IVAR_ID); CALL HANDLE_ERR(IERR)
+! define error messages
+!IERR = NF_DEF_VAR(ncid_out,'error_message',NF_CHAR,3,EVAR,IVAR_ID); CALL HANDLE_ERR(IERR)
 ! end definitions and close file
 IERR = NF_ENDDEF(ncid_out)
 IERR = NF_CLOSE(ncid_out)

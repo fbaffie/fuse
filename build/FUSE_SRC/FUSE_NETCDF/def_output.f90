@@ -20,6 +20,7 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
   USE multiforce, only: latUnits,lonUnits               ! units string
   USE multiforce, only: timeUnits                       ! units string
   USE multistate, only: ncid_out                        ! NetCDF output file ID
+  USE multiforce, only: GRID_FLAG                       ! .true. if distributed
 
   IMPLICIT NONE
 
@@ -56,10 +57,10 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
   CALL VARDESCRIBE()  ! get list of variable descriptions
   ! ---------------------------------------------------------------------------------------
 ! put file in define mode
-  print *, 'Create NetCDF file for runs:'
-  PRINT *, FNAME_NETCDF_RUNS
+  print *, 'Create NetCDF output file for runs:', TRIM(FNAME_NETCDF_RUNS)
 
   IERR = NF_CREATE(TRIM(FNAME_NETCDF_RUNS),NF_CLOBBER,ncid_out); CALL HANDLE_ERR(IERR)
+
   !IERR = NF_OPEN(TRIM(FNAME_NETCDF_RUNS),NF_WRITE,ncid_out); CALL HANDLE_ERR(IERR)
   !IERR = NF_REDEF(ncid_out); CALL HANDLE_ERR(IERR)
 
@@ -70,7 +71,6 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
   IF(.NOT.GRID_FLAG)THEN
     IERR = NF_DEF_DIM(ncid_out,'param_set',NPSET,param_dim); CALL HANDLE_ERR(IERR)
   ENDIF
-
 
   ! define character-position dimension for strings of max length 40
   !IERR = NF_DEF_DIM(ncid_out, "chid", 40, CHID); CALL HANDLE_ERR(IERR)
@@ -103,9 +103,13 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
     ! uncomment variables that should be written to output file
     IF (Q_ONLY) THEN
       WRITE_VAR=.FALSE.
+
+      IF(.NOT.GRID_FLAG) THEN ! do not write QOBS when running on grid
+        IF (TRIM(VNAME(IVAR)).EQ.'obsq')     WRITE_VAR=.TRUE.
+      END IF
+
       IF (TRIM(VNAME(IVAR)).EQ.'ppt')      WRITE_VAR=.TRUE.
       IF (TRIM(VNAME(IVAR)).EQ.'pet')      WRITE_VAR=.TRUE.
-      !IF (TRIM(VNAME(IVAR)).EQ.'obsq')     WRITE_VAR=.TRUE.
       IF (TRIM(VNAME(IVAR)).EQ.'evap_1')   WRITE_VAR=.TRUE.
       IF (TRIM(VNAME(IVAR)).EQ.'evap_2')   WRITE_VAR=.TRUE.
       IF (TRIM(VNAME(IVAR)).EQ.'q_instnt') WRITE_VAR=.TRUE.
@@ -172,11 +176,6 @@ SUBROUTINE DEF_OUTPUT(nSpat1,nSpat2,NPSET,NTIM)
   longitude_msp=longitude ! convert to actual single precision
   IERR = NF_INQ_VARID(ncid_out,'longitude',IVAR_ID); CALL HANDLE_ERR(IERR) ! get variable ID
   IERR = NF_PUT_VARA_REAL(ncid_out,IVAR_ID,1,nspat1,longitude_msp); CALL HANDLE_ERR(IERR) ! write data
-
-  !TSTART(1) = 1      ! start at beginning of variable
-  !TSTART(2) = 1      ! record number to write
-  !TCOUNT(1) = 20     ! number of chars to write
-  !TCOUNT(2) = 1      ! only write one record
 
   !IERR = NF_INQ_VARID(ncid_out,'param_set',IVAR_ID); CALL HANDLE_ERR(IERR) ! get variable ID
   !IERR = NF_PUT_VARA_TEXT(ncid_out,IVAR_ID,1,NPSET,name_psets); CALL HANDLE_ERR(IERR) ! write data
